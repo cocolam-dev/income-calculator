@@ -66,28 +66,14 @@ const Table = () => {
                   newSuperRate,
                   newNumDayOff,
                   hourlyBase,
-                  hourly,
                   setHourly,
-                  daily,
                   setDaily,
-                  weekly,
                   setWeekly,
-                  fortnightly,
                   setFortnightly,
-                  monthly,
                   setMonthly,
-                  yearly,
                   setYearly,
-                  year,
-                  setYear,
-                  superRate,
-                  setSuperRate,
                   GST,
-                  setGST,
-                  numDayOff,
-                  setNumDayOff,
-                  isContract,
-                  setIsContract
+                  isContract
                 );
               }}
             />
@@ -104,28 +90,14 @@ const Table = () => {
                 newSuperRate,
                 newNumDayOff,
                 hourlyBase,
-                hourly,
                 setHourly,
-                daily,
                 setDaily,
-                weekly,
                 setWeekly,
-                fortnightly,
                 setFortnightly,
-                monthly,
                 setMonthly,
-                yearly,
                 setYearly,
-                year,
-                setYear,
-                superRate,
-                setSuperRate,
                 GST,
-                setGST,
-                numDayOff,
-                setNumDayOff,
-                isContract,
-                setIsContract
+                isContract
               );
             }}
           />
@@ -185,28 +157,14 @@ const Table = () => {
                     newSuperRate,
                     newNumDayOff,
                     hourlyBase,
-                    hourly,
                     setHourly,
-                    daily,
                     setDaily,
-                    weekly,
                     setWeekly,
-                    fortnightly,
                     setFortnightly,
-                    monthly,
                     setMonthly,
-                    yearly,
                     setYearly,
-                    year,
-                    setYear,
-                    superRate,
-                    setSuperRate,
                     GST,
-                    setGST,
-                    numDayOff,
-                    setNumDayOff,
-                    isContract,
-                    setIsContract
+                    isContract
                   );
                 }}
               />
@@ -223,28 +181,14 @@ const Table = () => {
                     newSuperRate,
                     newNumDayOff,
                     hourlyBase,
-                    hourly,
                     setHourly,
-                    daily,
                     setDaily,
-                    weekly,
                     setWeekly,
-                    fortnightly,
                     setFortnightly,
-                    monthly,
                     setMonthly,
-                    yearly,
                     setYearly,
-                    year,
-                    setYear,
-                    superRate,
-                    setSuperRate,
                     GST,
-                    setGST,
-                    numDayOff,
-                    setNumDayOff,
-                    isContract,
-                    setIsContract
+                    isContract
                   );
                 }}
               />
@@ -260,28 +204,14 @@ const Table = () => {
                       newSuperRate,
                       newNumDayOff,
                       hourlyBase,
-                      hourly,
                       setHourly,
-                      daily,
                       setDaily,
-                      weekly,
                       setWeekly,
-                      fortnightly,
                       setFortnightly,
-                      monthly,
                       setMonthly,
-                      yearly,
                       setYearly,
-                      year,
-                      setYear,
-                      superRate,
-                      setSuperRate,
                       GST,
-                      setGST,
-                      numDayOff,
-                      setNumDayOff,
-                      isContract,
-                      setIsContract
+                      isContract
                     );
                   }}
                 />
@@ -303,28 +233,14 @@ const Table = () => {
                     newSuperRate,
                     newNumDayOff,
                     hourlyBase,
-                    hourly,
                     setHourly,
-                    daily,
                     setDaily,
-                    weekly,
                     setWeekly,
-                    fortnightly,
                     setFortnightly,
-                    monthly,
                     setMonthly,
-                    yearly,
                     setYearly,
-                    year,
-                    setYear,
-                    superRate,
-                    setSuperRate,
                     GST,
-                    setGST,
-                    numDayOff,
-                    setNumDayOff,
-                    isContract,
-                    setIsContract
+                    isContract
                   );
                 }}
               />
@@ -341,28 +257,14 @@ const Table = () => {
                     newSuperRate,
                     newNumDayOff,
                     hourlyBase,
-                    hourly,
                     setHourly,
-                    daily,
                     setDaily,
-                    weekly,
                     setWeekly,
-                    fortnightly,
                     setFortnightly,
-                    monthly,
                     setMonthly,
-                    yearly,
                     setYearly,
-                    year,
-                    setYear,
-                    superRate,
-                    setSuperRate,
                     GST,
-                    setGST,
-                    numDayOff,
-                    setNumDayOff,
-                    isContract,
-                    setIsContract
+                    isContract
                   );
                 }}
               />
@@ -379,28 +281,14 @@ const Table = () => {
                       newSuperRate,
                       newNumDayOff,
                       hourlyBase,
-                      hourly,
                       setHourly,
-                      daily,
                       setDaily,
-                      weekly,
                       setWeekly,
-                      fortnightly,
                       setFortnightly,
-                      monthly,
                       setMonthly,
-                      yearly,
                       setYearly,
-                      year,
-                      setYear,
-                      superRate,
-                      setSuperRate,
                       GST,
-                      setGST,
-                      numDayOff,
-                      setNumDayOff,
-                      isContract,
-                      setIsContract
+                      isContract
                     );
                   }}
                 />
@@ -422,28 +310,14 @@ const Table = () => {
                     newSuperRate,
                     newNumDayOff,
                     hourlyBase,
-                    hourly,
                     setHourly,
-                    daily,
                     setDaily,
-                    weekly,
                     setWeekly,
-                    fortnightly,
                     setFortnightly,
-                    monthly,
                     setMonthly,
-                    yearly,
                     setYearly,
-                    year,
-                    setYear,
-                    superRate,
-                    setSuperRate,
                     GST,
-                    setGST,
-                    numDayOff,
-                    setNumDayOff,
-                    isContract,
-                    setIsContract
+                    isContract
                   );
                 }}
               />
@@ -460,28 +334,14 @@ const Table = () => {
                     newSuperRate,
                     newNumDayOff,
                     hourlyBase,
-                    hourly,
                     setHourly,
-                    daily,
                     setDaily,
-                    weekly,
                     setWeekly,
-                    fortnightly,
                     setFortnightly,
-                    monthly,
                     setMonthly,
-                    yearly,
                     setYearly,
-                    year,
-                    setYear,
-                    superRate,
-                    setSuperRate,
                     GST,
-                    setGST,
-                    numDayOff,
-                    setNumDayOff,
-                    isContract,
-                    setIsContract
+                    isContract
                   );
                 }}
               />
@@ -500,28 +360,14 @@ const Table = () => {
                       newSuperRate,
                       newNumDayOff,
                       hourlyBase,
-                      hourly,
                       setHourly,
-                      daily,
                       setDaily,
-                      weekly,
                       setWeekly,
-                      fortnightly,
                       setFortnightly,
-                      monthly,
                       setMonthly,
-                      yearly,
                       setYearly,
-                      year,
-                      setYear,
-                      superRate,
-                      setSuperRate,
                       GST,
-                      setGST,
-                      numDayOff,
-                      setNumDayOff,
-                      isContract,
-                      setIsContract
+                      isContract
                     );
                   }}
                 />
@@ -543,28 +389,14 @@ const Table = () => {
                     newSuperRate,
                     newNumDayOff,
                     hourlyBase,
-                    hourly,
                     setHourly,
-                    daily,
                     setDaily,
-                    weekly,
                     setWeekly,
-                    fortnightly,
                     setFortnightly,
-                    monthly,
                     setMonthly,
-                    yearly,
                     setYearly,
-                    year,
-                    setYear,
-                    superRate,
-                    setSuperRate,
                     GST,
-                    setGST,
-                    numDayOff,
-                    setNumDayOff,
-                    isContract,
-                    setIsContract
+                    isContract
                   );
                 }}
               />
@@ -581,28 +413,14 @@ const Table = () => {
                     newSuperRate,
                     newNumDayOff,
                     hourlyBase,
-                    hourly,
                     setHourly,
-                    daily,
                     setDaily,
-                    weekly,
                     setWeekly,
-                    fortnightly,
                     setFortnightly,
-                    monthly,
                     setMonthly,
-                    yearly,
                     setYearly,
-                    year,
-                    setYear,
-                    superRate,
-                    setSuperRate,
                     GST,
-                    setGST,
-                    numDayOff,
-                    setNumDayOff,
-                    isContract,
-                    setIsContract
+                    isContract
                   );
                 }}
               />
@@ -621,28 +439,14 @@ const Table = () => {
                       newSuperRate,
                       newNumDayOff,
                       hourlyBase,
-                      hourly,
                       setHourly,
-                      daily,
                       setDaily,
-                      weekly,
                       setWeekly,
-                      fortnightly,
                       setFortnightly,
-                      monthly,
                       setMonthly,
-                      yearly,
                       setYearly,
-                      year,
-                      setYear,
-                      superRate,
-                      setSuperRate,
                       GST,
-                      setGST,
-                      numDayOff,
-                      setNumDayOff,
-                      isContract,
-                      setIsContract
+                      isContract
                     );
                   }}
                 />
@@ -664,28 +468,14 @@ const Table = () => {
                     newSuperRate,
                     newNumDayOff,
                     hourlyBase,
-                    hourly,
                     setHourly,
-                    daily,
                     setDaily,
-                    weekly,
                     setWeekly,
-                    fortnightly,
                     setFortnightly,
-                    monthly,
                     setMonthly,
-                    yearly,
                     setYearly,
-                    year,
-                    setYear,
-                    superRate,
-                    setSuperRate,
                     GST,
-                    setGST,
-                    numDayOff,
-                    setNumDayOff,
-                    isContract,
-                    setIsContract
+                    isContract
                   );
                 }}
               />
@@ -703,28 +493,14 @@ const Table = () => {
                     newSuperRate,
                     newNumDayOff,
                     hourlyBase,
-                    hourly,
                     setHourly,
-                    daily,
                     setDaily,
-                    weekly,
                     setWeekly,
-                    fortnightly,
                     setFortnightly,
-                    monthly,
                     setMonthly,
-                    yearly,
                     setYearly,
-                    year,
-                    setYear,
-                    superRate,
-                    setSuperRate,
                     GST,
-                    setGST,
-                    numDayOff,
-                    setNumDayOff,
-                    isContract,
-                    setIsContract
+                    isContract
                   );
                 }}
               />
@@ -749,28 +525,14 @@ const Table = () => {
                       newSuperRate,
                       newNumDayOff,
                       hourlyBase,
-                      hourly,
                       setHourly,
-                      daily,
                       setDaily,
-                      weekly,
                       setWeekly,
-                      fortnightly,
                       setFortnightly,
-                      monthly,
                       setMonthly,
-                      yearly,
                       setYearly,
-                      year,
-                      setYear,
-                      superRate,
-                      setSuperRate,
                       GST,
-                      setGST,
-                      numDayOff,
-                      setNumDayOff,
-                      isContract,
-                      setIsContract
+                      isContract
                     );
                   }}
                 />
@@ -804,28 +566,14 @@ const Table = () => {
                       newSuperRate,
                       newNumDayOff,
                       hourlyBase,
-                      hourly,
                       setHourly,
-                      daily,
                       setDaily,
-                      weekly,
                       setWeekly,
-                      fortnightly,
                       setFortnightly,
-                      monthly,
                       setMonthly,
-                      yearly,
                       setYearly,
-                      year,
-                      setYear,
-                      superRate,
-                      setSuperRate,
                       GST,
-                      setGST,
-                      numDayOff,
-                      setNumDayOff,
-                      isContract,
-                      setIsContract
+                      isContract
                     );
                   }}
                 />
@@ -846,28 +594,14 @@ const Table = () => {
                       newSuperRate,
                       newNumDayOff,
                       hourlyBase,
-                      hourly,
                       setHourly,
-                      daily,
                       setDaily,
-                      weekly,
                       setWeekly,
-                      fortnightly,
                       setFortnightly,
-                      monthly,
                       setMonthly,
-                      yearly,
                       setYearly,
-                      year,
-                      setYear,
-                      superRate,
-                      setSuperRate,
                       GST,
-                      setGST,
-                      numDayOff,
-                      setNumDayOff,
-                      isContract,
-                      setIsContract
+                      isContract
                     );
                   }}
                 />

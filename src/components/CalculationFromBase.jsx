@@ -19,7 +19,6 @@ const CalculationFromBase = (
   let newYearly = [];
   let FactorOfReductionByDaysOff = 0;
 
-  console.log(isContract);
   isContract && hourlyBase > 0
     ? (FactorOfReductionByDaysOff = 1 - newNumDayOff / 260)
     : (FactorOfReductionByDaysOff = 1);
