@@ -139,8 +139,12 @@ const Table = () => {
             <td className="SmallerText">Before tax income</td>
             <td></td>
             <td className="SmallerText">Base + super</td>
-            <td className="SmallerText">GST - contractors only</td>
-            <td className="SmallerText">Package + GST - contractors only</td>
+            {newIsContract && (
+              <td className="SmallerText">GST - contractors only</td>
+            )}
+            {newIsContract && (
+              <td className="SmallerText">Package + GST - contractors only</td>
+            )}
           </tr>
           <tr>
             <td className="RowHeader">Hour</td>
