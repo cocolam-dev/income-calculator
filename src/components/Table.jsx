@@ -1,5 +1,6 @@
 import { useGlobalContext } from "./GlobalContext";
-import CalculationFromBase from "./CalculationFromBase";
+import calculationFromBase from "./calculationFromBase";
+import { NumericFormat } from "react-number-format";
 
 let hourlyBase = 0;
 let newNumDayOff = 9;
@@ -62,7 +63,8 @@ const Table = () => {
               onChange={(e) => {
                 newNumDayOff = e.target.value;
                 setNumDayOff(newNumDayOff);
-                CalculationFromBase(
+                calculationFromBase(
+                  null,
                   newSuperRate,
                   newNumDayOff,
                   hourlyBase,
@@ -86,7 +88,8 @@ const Table = () => {
             onChange={(e) => {
               newSuperRate = e.target.value / 100;
               setSuperRate(newSuperRate);
-              CalculationFromBase(
+              calculationFromBase(
+                null,
                 newSuperRate,
                 newNumDayOff,
                 hourlyBase,
@@ -148,10 +151,55 @@ const Table = () => {
           </tr>
           <tr>
             <td className="RowHeader">Hour</td>
-            <td id="hourlyAfterTaxIncome">{hourly[0]}</td>
-            <td id="hourlyIncomeTax">{hourly[1]}</td>
+            <td id="hourlyAfterTaxIncome">
+              <NumericFormat
+                displayType="text"
+                value={hourly[0]}
+                thousandSeparator=","
+                prefix={"$"}
+              />
+            </td>
+            <td id="hourlyIncomeTax">
+              <NumericFormat
+                displayType="text"
+                value={hourly[1]}
+                thousandSeparator=","
+                prefix={"$"}
+              />
+            </td>
             <td id="hourlyBaseIncome">
-              <input
+              <NumericFormat
+                type="text"
+                value={hourly[2]}
+                thousandSeparator=","
+                prefix={"$"}
+                onValueChange={(values, sourceInfo) => {
+                  const enteredValue = values.floatValue;
+                  const arrayName = "newHourly";
+                  const i = 2;
+                  const isEvent = sourceInfo.source === "event";
+                  if (isEvent) {
+                    hourlyBase = values.floatValue;
+                    calculationFromBase(
+                      enteredValue,
+                      newSuperRate,
+                      newNumDayOff,
+                      hourlyBase,
+                      setHourly,
+                      setDaily,
+                      setWeekly,
+                      setFortnightly,
+                      setMonthly,
+                      setYearly,
+                      GST,
+                      isContract,
+                      arrayName,
+                      i
+                    );
+                  }
+                }}
+              />
+              {/* <input
                 key="hourlyBaseIncome"
                 name="hourlyBaseIncome"
                 value={hourly[2]}
@@ -171,36 +219,115 @@ const Table = () => {
                     isContract
                   );
                 }}
+              /> */}
+            </td>
+            <td id="hourlySuper">
+              <NumericFormat
+                displayType="text"
+                value={hourly[3]}
+                thousandSeparator=","
+                prefix={"$"}
               />
             </td>
-            <td id="hourlySuper">{hourly[3]}</td>
             <td id="hourlyPackage">
-              <input
-                key="hourlyPackage"
-                name="hourlyPackage"
+              <NumericFormat
+                type="text"
                 value={hourly[4]}
-                onChange={(e) => {
-                  hourlyBase = e.target.value / (1 + superRate);
-                  CalculationFromBase(
-                    newSuperRate,
-                    newNumDayOff,
-                    hourlyBase,
-                    setHourly,
-                    setDaily,
-                    setWeekly,
-                    setFortnightly,
-                    setMonthly,
-                    setYearly,
-                    GST,
-                    isContract
-                  );
+                thousandSeparator=","
+                prefix={"$"}
+                onValueChange={(values, sourceInfo) => {
+                  const arrayName = "newHourly";
+                  const i = 4;
+                  const isEvent = sourceInfo.source === "event";
+                  if (isEvent) {
+                    const enteredValue = values.floatValue;
+                    hourlyBase = values.floatValue / (1 + superRate);
+                    calculationFromBase(
+                      enteredValue,
+                      newSuperRate,
+                      newNumDayOff,
+                      hourlyBase,
+                      setHourly,
+                      setDaily,
+                      setWeekly,
+                      setFortnightly,
+                      setMonthly,
+                      setYearly,
+                      GST,
+                      isContract,
+                      arrayName,
+                      i
+                    );
+                  }
                 }}
               />
             </td>
-            {newIsContract && <td id="hourlyGST">{hourly[5]}</td>}
+            {/* <input
+              //   key="hourlyPackage"
+              //   name="hourlyPackage"
+              //   value={hourly[4]}
+              //   onChange={(e) => {
+              //     hourlyBase = e.target.value / (1 + superRate);
+              //     CalculationFromBase(
+              //       newSuperRate,
+              //       newNumDayOff,
+              //       hourlyBase,
+              //       setHourly,
+              //       setDaily,
+              //       setWeekly,
+              //       setFortnightly,
+              //       setMonthly,
+              //       setYearly,
+              //       GST,
+              //       isContract
+              //     );
+              //   }}
+              // /> */}
+            {newIsContract && (
+              <td id="hourlyGST">
+                <NumericFormat
+                  displayType="text"
+                  value={hourly[5]}
+                  thousandSeparator=","
+                  prefix={"$"}
+                />
+              </td>
+            )}
             {newIsContract && (
               <td id="hourlyTotal">
-                <input
+                <NumericFormat
+                  type="text"
+                  value={hourly[6]}
+                  thousandSeparator=","
+                  prefix={"$"}
+                  onValueChange={(values, sourceInfo) => {
+                    const arrayName = "newHourly";
+                    const i = 6;
+                    const isEvent = sourceInfo.source === "event";
+                    if (isEvent) {
+                      const enteredValue = values.floatValue;
+                      hourlyBase =
+                        values.floatValue / (1 + GST) / (1 + superRate);
+                      calculationFromBase(
+                        enteredValue,
+                        newSuperRate,
+                        newNumDayOff,
+                        hourlyBase,
+                        setHourly,
+                        setDaily,
+                        setWeekly,
+                        setFortnightly,
+                        setMonthly,
+                        setYearly,
+                        GST,
+                        isContract,
+                        arrayName,
+                        i
+                      );
+                    }
+                  }}
+                />
+                {/* <input
                   value={hourly[6]}
                   onChange={(e) => {
                     hourlyBase = e.target.value / (1 + GST) / (1 + superRate);
@@ -218,16 +345,61 @@ const Table = () => {
                       isContract
                     );
                   }}
-                />
+                /> */}
               </td>
             )}
           </tr>
           <tr>
             <td className="RowHeader">Day</td>
-            <td id="dailyAfterTaxIncome">{daily[0]}</td>
-            <td id="dailyIncomeTax">{daily[1]}</td>
+            <td id="dailyAfterTaxIncome">
+              <NumericFormat
+                displayType="text"
+                value={daily[0]}
+                thousandSeparator=","
+                prefix={"$"}
+              />
+            </td>
+            <td id="dailyIncomeTax">
+              <NumericFormat
+                displayType="text"
+                value={daily[1]}
+                thousandSeparator=","
+                prefix={"$"}
+              />
+            </td>
             <td id="dailyBaseIncome">
-              <input
+              <NumericFormat
+                type="text"
+                value={daily[2]}
+                thousandSeparator=","
+                prefix={"$"}
+                onValueChange={(values, sourceInfo) => {
+                  const arrayName = "newDaily";
+                  const i = 2;
+                  const isEvent = sourceInfo.source === "event";
+                  if (isEvent) {
+                    const enteredValue = values.floatValue;
+                    hourlyBase = values.floatValue / 8;
+                    calculationFromBase(
+                      enteredValue,
+                      newSuperRate,
+                      newNumDayOff,
+                      hourlyBase,
+                      setHourly,
+                      setDaily,
+                      setWeekly,
+                      setFortnightly,
+                      setMonthly,
+                      setYearly,
+                      GST,
+                      isContract,
+                      arrayName,
+                      i
+                    );
+                  }
+                }}
+              />
+              {/* <input
                 key="dailyBaseIncome"
                 name="dailyBaseIncome"
                 value={daily[2]}
@@ -247,11 +419,50 @@ const Table = () => {
                     isContract
                   );
                 }}
+              /> */}
+            </td>
+            <td id="dailySuper">
+              <NumericFormat
+                displayType="text"
+                value={daily[3]}
+                thousandSeparator=","
+                prefix={"$"}
               />
             </td>
-            <td id="dailySuper">{daily[3]}</td>
             <td id="dailyPackage">
-              <input
+              <NumericFormat
+                type="text"
+                value={daily[4]}
+                thousandSeparator=","
+                prefix={"$"}
+                onValueChange={(values, sourceInfo) => {
+                  const arrayName = "newDaily";
+                  const i = 4;
+                  const isEvent = sourceInfo.source === "event";
+                  if (isEvent) {
+                    const enteredValue = values.floatValue;
+                    hourlyBase = values.floatValue / 8 / (1 + superRate);
+                    calculationFromBase(
+                      enteredValue,
+                      newSuperRate,
+                      newNumDayOff,
+                      hourlyBase,
+                      setHourly,
+                      setDaily,
+                      setWeekly,
+                      setFortnightly,
+                      setMonthly,
+                      setYearly,
+                      GST,
+                      isContract,
+                      arrayName,
+                      i
+                    );
+                  }
+                }}
+              />
+
+              {/* <input
                 key="dailyPackage"
                 name="dailyPackage"
                 value={daily[4]}
@@ -271,12 +482,53 @@ const Table = () => {
                     isContract
                   );
                 }}
-              />
+              /> */}
             </td>
-            {newIsContract && <td id="dailyGST">{daily[5]}</td>}
+            {newIsContract && (
+              <td id="dailyGST">
+                <NumericFormat
+                  displayType="text"
+                  value={daily[5]}
+                  thousandSeparator=","
+                  prefix={"$"}
+                />
+              </td>
+            )}
             {newIsContract && (
               <td id="dailyTotal">
-                <input
+                <NumericFormat
+                  type="text"
+                  value={daily[6]}
+                  thousandSeparator=","
+                  prefix={"$"}
+                  onValueChange={(values, sourceInfo) => {
+                    const arrayName = "newDaily";
+                    const i = 6;
+                    const isEvent = sourceInfo.source === "event";
+                    if (isEvent) {
+                      const enteredValue = values.floatValue;
+                      hourlyBase =
+                        values.floatValue / 8 / (1 + GST) / (1 + superRate);
+                      calculationFromBase(
+                        enteredValue,
+                        newSuperRate,
+                        newNumDayOff,
+                        hourlyBase,
+                        setHourly,
+                        setDaily,
+                        setWeekly,
+                        setFortnightly,
+                        setMonthly,
+                        setYearly,
+                        GST,
+                        isContract,
+                        arrayName,
+                        i
+                      );
+                    }
+                  }}
+                />
+                {/* <input
                   value={daily[6]}
                   onChange={(e) => {
                     hourlyBase =
@@ -295,16 +547,62 @@ const Table = () => {
                       isContract
                     );
                   }}
-                />
+                /> */}
               </td>
             )}
           </tr>
           <tr>
             <td className="RowHeader">Week</td>
-            <td id="weeklyAfterTaxIncome">{weekly[0]}</td>
-            <td id="weeklyIncomeTax">{weekly[1]}</td>
+            <td id="weeklyAfterTaxIncome">
+              <NumericFormat
+                displayType="text"
+                value={weekly[0]}
+                thousandSeparator=","
+                prefix={"$"}
+              />
+            </td>
+            <td id="weeklyIncomeTax">
+              <NumericFormat
+                displayType="text"
+                value={weekly[1]}
+                thousandSeparator=","
+                prefix={"$"}
+              />
+            </td>
             <td id="weeklyBaseIncome">
-              <input
+              <NumericFormat
+                type="text"
+                value={weekly[2]}
+                thousandSeparator=","
+                prefix={"$"}
+                onValueChange={(values, sourceInfo) => {
+                  const arrayName = "newWeekly";
+                  const i = 2;
+                  const isEvent = sourceInfo.source === "event";
+                  if (isEvent) {
+                    const enteredValue = values.floatValue;
+                    hourlyBase = values.floatValue / 5 / 8;
+                    calculationFromBase(
+                      enteredValue,
+                      newSuperRate,
+                      newNumDayOff,
+                      hourlyBase,
+                      setHourly,
+                      setDaily,
+                      setWeekly,
+                      setFortnightly,
+                      setMonthly,
+                      setYearly,
+                      GST,
+                      isContract,
+                      arrayName,
+                      i
+                    );
+                  }
+                }}
+              />
+
+              {/* <input
                 key="weeklyBaseIncome"
                 name="weeklyBaseIncome"
                 value={weekly[2]}
@@ -324,11 +622,49 @@ const Table = () => {
                     isContract
                   );
                 }}
+              /> */}
+            </td>
+            <td id="weeklySuper">
+              <NumericFormat
+                displayType="text"
+                value={weekly[3]}
+                thousandSeparator=","
+                prefix={"$"}
               />
             </td>
-            <td id="weeklySuper">{weekly[3]}</td>
             <td id="weeklyPackage">
-              <input
+              <NumericFormat
+                type="text"
+                value={weekly[4]}
+                thousandSeparator=","
+                prefix={"$"}
+                onValueChange={(values, sourceInfo) => {
+                  const arrayName = "newWeekly";
+                  const i = 4;
+                  const isEvent = sourceInfo.source === "event";
+                  if (isEvent) {
+                    const enteredValue = values.floatValue;
+                    hourlyBase = values.floatValue / 5 / 8 / (1 + superRate);
+                    calculationFromBase(
+                      enteredValue,
+                      newSuperRate,
+                      newNumDayOff,
+                      hourlyBase,
+                      setHourly,
+                      setDaily,
+                      setWeekly,
+                      setFortnightly,
+                      setMonthly,
+                      setYearly,
+                      GST,
+                      isContract,
+                      arrayName,
+                      i
+                    );
+                  }
+                }}
+              />
+              {/* <input
                 key="weeklyPackage"
                 name="weeklyPackage"
                 value={weekly[4]}
@@ -348,12 +684,53 @@ const Table = () => {
                     isContract
                   );
                 }}
-              />
+              /> */}
             </td>
-            {newIsContract && <td id="weeklyGST">{weekly[5]}</td>}
+            {newIsContract && (
+              <td id="weeklyGST">
+                <NumericFormat
+                  displayType="text"
+                  value={weekly[5]}
+                  thousandSeparator=","
+                  prefix={"$"}
+                />
+              </td>
+            )}
             {newIsContract && (
               <td id="weeklyTotal">
-                <input
+                <NumericFormat
+                  type="text"
+                  value={weekly[6]}
+                  thousandSeparator=","
+                  prefix={"$"}
+                  onValueChange={(values, sourceInfo) => {
+                    const arrayName = "newWeekly";
+                    const i = 6;
+                    const isEvent = sourceInfo.source === "event";
+                    if (isEvent) {
+                      const enteredValue = values.floatValue;
+                      hourlyBase =
+                        values.floatValue / 5 / 8 / (1 + GST) / (1 + superRate);
+                      calculationFromBase(
+                        enteredValue,
+                        newSuperRate,
+                        newNumDayOff,
+                        hourlyBase,
+                        setHourly,
+                        setDaily,
+                        setWeekly,
+                        setFortnightly,
+                        setMonthly,
+                        setYearly,
+                        GST,
+                        isContract,
+                        arrayName,
+                        i
+                      );
+                    }
+                  }}
+                />
+                {/* <input
                   key="weeklyTotal"
                   name="weeklyTotal"
                   value={weekly[6]}
@@ -374,16 +751,62 @@ const Table = () => {
                       isContract
                     );
                   }}
-                />
+                /> */}
               </td>
             )}
           </tr>
           <tr>
             <td className="RowHeader">Fortnight</td>
-            <td id="fortnightlyAfterTaxIncome">{fortnightly[0]}</td>
-            <td id="fortnightlyIncomeTax">{fortnightly[1]}</td>
+            <td id="fortnightlyAfterTaxIncome">
+              <NumericFormat
+                displayType="text"
+                value={fortnightly[0]}
+                thousandSeparator=","
+                prefix={"$"}
+              />
+            </td>
+            <td id="fortnightlyIncomeTax">
+              <NumericFormat
+                displayType="text"
+                value={fortnightly[1]}
+                thousandSeparator=","
+                prefix={"$"}
+              />
+            </td>
             <td id="fortnightlyBaseIncome">
-              <input
+              <NumericFormat
+                type="text"
+                value={fortnightly[2]}
+                thousandSeparator=","
+                prefix={"$"}
+                onValueChange={(values, sourceInfo) => {
+                  const arrayName = "newFortnightly";
+                  const i = 2;
+                  const isEvent = sourceInfo.source === "event";
+                  if (isEvent) {
+                    const enteredValue = values.floatValue;
+                    hourlyBase = values.floatValue / 2 / 5 / 8;
+                    calculationFromBase(
+                      enteredValue,
+                      newSuperRate,
+                      newNumDayOff,
+                      hourlyBase,
+                      setHourly,
+                      setDaily,
+                      setWeekly,
+                      setFortnightly,
+                      setMonthly,
+                      setYearly,
+                      GST,
+                      isContract,
+                      arrayName,
+                      i
+                    );
+                  }
+                }}
+              />
+
+              {/* <input
                 key="fortnightlyBaseIncome"
                 name="fortnightlyBaseIncome"
                 value={fortnightly[2]}
@@ -403,11 +826,50 @@ const Table = () => {
                     isContract
                   );
                 }}
+              /> */}
+            </td>
+            <td id="fortnightlySuper">
+              <NumericFormat
+                displayType="text"
+                value={fortnightly[3]}
+                thousandSeparator=","
+                prefix={"$"}
               />
             </td>
-            <td id="fortnightlySuper">{fortnightly[3]}</td>
             <td id="fortnightlyPackage">
-              <input
+              <NumericFormat
+                type="text"
+                value={fortnightly[4]}
+                thousandSeparator=","
+                prefix={"$"}
+                onValueChange={(values, sourceInfo) => {
+                  const arrayName = "newFortnightly";
+                  const i = 4;
+                  const isEvent = sourceInfo.source === "event";
+                  if (isEvent) {
+                    const enteredValue = values.floatValue;
+                    hourlyBase =
+                      values.floatValue / 2 / 5 / 8 / (1 + superRate);
+                    calculationFromBase(
+                      enteredValue,
+                      newSuperRate,
+                      newNumDayOff,
+                      hourlyBase,
+                      setHourly,
+                      setDaily,
+                      setWeekly,
+                      setFortnightly,
+                      setMonthly,
+                      setYearly,
+                      GST,
+                      isContract,
+                      arrayName,
+                      i
+                    );
+                  }
+                }}
+              />
+              {/* <input
                 key="fortnightlyPackage"
                 name="fortnightlyPackage"
                 value={fortnightly[4]}
@@ -427,12 +889,58 @@ const Table = () => {
                     isContract
                   );
                 }}
-              />
+              /> */}
             </td>
-            {newIsContract && <td id="fortnightlyGST">{fortnightly[5]}</td>}
+            {newIsContract && (
+              <td id="fortnightlyGST">
+                <NumericFormat
+                  displayType="text"
+                  value={fortnightly[5]}
+                  thousandSeparator=","
+                  prefix={"$"}
+                />
+              </td>
+            )}
             {newIsContract && (
               <td id="fortnightlyTotal">
-                <input
+                <NumericFormat
+                  type="text"
+                  value={fortnightly[6]}
+                  thousandSeparator=","
+                  prefix={"$"}
+                  onValueChange={(values, sourceInfo) => {
+                    const arrayName = "newFortnightly";
+                    const i = 6;
+                    const isEvent = sourceInfo.source === "event";
+                    if (isEvent) {
+                      const enteredValue = values.floatValue;
+                      hourlyBase =
+                        values.floatValue /
+                        2 /
+                        5 /
+                        8 /
+                        (1 + GST) /
+                        (1 + superRate);
+                      calculationFromBase(
+                        enteredValue,
+                        newSuperRate,
+                        newNumDayOff,
+                        hourlyBase,
+                        setHourly,
+                        setDaily,
+                        setWeekly,
+                        setFortnightly,
+                        setMonthly,
+                        setYearly,
+                        GST,
+                        isContract,
+                        arrayName,
+                        i
+                      );
+                    }
+                  }}
+                />
+                {/* <input
                   key="fortnightlyTotal"
                   name="fortnightlyTotal"
                   value={fortnightly[6]}
@@ -453,16 +961,61 @@ const Table = () => {
                       isContract
                     );
                   }}
-                />
+                /> */}
               </td>
             )}
           </tr>
           <tr>
             <td className="RowHeader">Month</td>
-            <td id="monthlyAfterTaxIncome">{monthly[0]}</td>
-            <td id="monthlyTax">{monthly[1]}</td>
+            <td id="monthlyAfterTaxIncome">
+              <NumericFormat
+                displayType="text"
+                value={monthly[0]}
+                thousandSeparator=","
+                prefix={"$"}
+              />
+            </td>
+            <td id="monthlyTax">
+              <NumericFormat
+                displayType="text"
+                value={monthly[1]}
+                thousandSeparator=","
+                prefix={"$"}
+              />
+            </td>
             <td id="monthlyBaseIncome">
-              <input
+              <NumericFormat
+                type="text"
+                value={monthly[2]}
+                thousandSeparator=","
+                prefix={"$"}
+                onValueChange={(values, sourceInfo) => {
+                  const arrayName = "newMonthly";
+                  const i = 2;
+                  const isEvent = sourceInfo.source === "event";
+                  if (isEvent) {
+                    const enteredValue = values.floatValue;
+                    hourlyBase = (values.floatValue * 12) / 52 / 5 / 8;
+                    calculationFromBase(
+                      enteredValue,
+                      newSuperRate,
+                      newNumDayOff,
+                      hourlyBase,
+                      setHourly,
+                      setDaily,
+                      setWeekly,
+                      setFortnightly,
+                      setMonthly,
+                      setYearly,
+                      GST,
+                      isContract,
+                      arrayName,
+                      i
+                    );
+                  }
+                }}
+              />
+              {/* <input
                 key="monthlyBaseIncome"
                 name="monthlyBaseIncome"
                 value={monthly[2]}
@@ -482,11 +1035,50 @@ const Table = () => {
                     isContract
                   );
                 }}
+              /> */}
+            </td>
+            <td id="monthlySuper">
+              <NumericFormat
+                displayType="text"
+                value={monthly[3]}
+                thousandSeparator=","
+                prefix={"$"}
               />
             </td>
-            <td id="monthlySuper">{monthly[3]}</td>
             <td id="monthlyPackage">
-              <input
+              <NumericFormat
+                type="text"
+                value={monthly[4]}
+                thousandSeparator=","
+                prefix={"$"}
+                onValueChange={(values, sourceInfo) => {
+                  const arrayName = "newMonthly";
+                  const i = 4;
+                  const isEvent = sourceInfo.source === "event";
+                  if (isEvent) {
+                    const enteredValue = values.floatValue;
+                    hourlyBase =
+                      (values.floatValue * 12) / 52 / 5 / 8 / (1 + superRate);
+                    calculationFromBase(
+                      enteredValue,
+                      newSuperRate,
+                      newNumDayOff,
+                      hourlyBase,
+                      setHourly,
+                      setDaily,
+                      setWeekly,
+                      setFortnightly,
+                      setMonthly,
+                      setYearly,
+                      GST,
+                      isContract,
+                      arrayName,
+                      i
+                    );
+                  }
+                }}
+              />
+              {/* <input
                 key="monthlyPackage"
                 name="monthlyPackage"
                 value={monthly[4]}
@@ -507,13 +1099,60 @@ const Table = () => {
                     isContract
                   );
                 }}
-              />
+              /> */}
             </td>
-            {newIsContract && <td id="monthlyGST">{monthly[5]}</td>}
+            {newIsContract && (
+              <td id="monthlyGST">
+                <NumericFormat
+                  displayType="text"
+                  value={monthly[5]}
+                  thousandSeparator=","
+                  prefix={"$"}
+                />
+              </td>
+            )}
 
             {newIsContract && (
               <td id="monthlyTotal">
-                <input
+                <NumericFormat
+                  type="text"
+                  value={monthly[6]}
+                  thousandSeparator=","
+                  prefix={"$"}
+                  onValueChange={(values, sourceInfo) => {
+                    const arrayName = "newMonthly";
+                    const i = 6;
+
+                    const isEvent = sourceInfo.source === "event";
+                    if (isEvent) {
+                      const enteredValue = values.floatValue;
+                      hourlyBase =
+                        (values.floatValue * 12) /
+                        52 /
+                        5 /
+                        8 /
+                        (1 + GST) /
+                        (1 + superRate);
+                      calculationFromBase(
+                        enteredValue,
+                        newSuperRate,
+                        newNumDayOff,
+                        hourlyBase,
+                        setHourly,
+                        setDaily,
+                        setWeekly,
+                        setFortnightly,
+                        setMonthly,
+                        setYearly,
+                        GST,
+                        isContract,
+                        arrayName,
+                        i
+                      );
+                    }
+                  }}
+                />
+                {/* <input
                   key="monthlyTotal"
                   name="monthlyTotal"
                   value={monthly[6]}
@@ -539,7 +1178,7 @@ const Table = () => {
                       isContract
                     );
                   }}
-                />
+                /> */}
               </td>
             )}
           </tr>
@@ -554,13 +1193,65 @@ const Table = () => {
                 "Year"
               )}
             </td>
-            <td id="yearlyAfterTaxIncome">{yearly[0]}</td>
-            <td id="yearlyIncomeTax">{yearly[1]}</td>
+            <td id="yearlyAfterTaxIncome">
+              <NumericFormat
+                displayType="text"
+                value={yearly[0]}
+                thousandSeparator=","
+                prefix={"$"}
+              />
+            </td>
+            <td id="yearlyIncomeTax">
+              <NumericFormat
+                displayType="text"
+                value={yearly[1]}
+                thousandSeparator=","
+                prefix={"$"}
+              />
+            </td>
             {newIsContract ? (
-              <td>{yearly[2]}</td>
+              <td>
+                <NumericFormat
+                  displayType="text"
+                  value={yearly[2]}
+                  thousandSeparator=","
+                  prefix={"$"}
+                />
+              </td>
             ) : (
               <td id="yearlyBaseIncome">
-                <input
+                <NumericFormat
+                  type="text"
+                  value={yearly[2]}
+                  thousandSeparator=","
+                  prefix={"$"}
+                  onValueChange={(values, sourceInfo) => {
+                    const arrayName = "newYearly";
+                    const i = 2;
+                    const isEvent = sourceInfo.source === "event";
+                    if (isEvent) {
+                      const enteredValue = values.floatValue;
+                      hourlyBase = values.floatValue / 52 / 5 / 8;
+                      calculationFromBase(
+                        enteredValue,
+                        newSuperRate,
+                        newNumDayOff,
+                        hourlyBase,
+                        setHourly,
+                        setDaily,
+                        setWeekly,
+                        setFortnightly,
+                        setMonthly,
+                        setYearly,
+                        GST,
+                        isContract,
+                        arrayName,
+                        i
+                      );
+                    }
+                  }}
+                />
+                {/* <input
                   key="yearlyBaseIncome"
                   name="yearlyBaseIncome"
                   value={yearly[2]}
@@ -580,15 +1271,61 @@ const Table = () => {
                       isContract
                     );
                   }}
-                />
+                /> */}
               </td>
             )}
-            <td id="yearlySuper">{yearly[3]}</td>
+            <td id="yearlySuper">
+              <NumericFormat
+                displayType="text"
+                value={yearly[3]}
+                thousandSeparator=","
+                prefix={"$"}
+              />
+            </td>
             {newIsContract ? (
-              <td>{yearly[4]}</td>
+              <td>
+                <NumericFormat
+                  displayType="text"
+                  value={yearly[4]}
+                  thousandSeparator=","
+                  prefix={"$"}
+                />
+              </td>
             ) : (
               <td id="yearlyPackage">
-                <input
+                <NumericFormat
+                  type="text"
+                  value={yearly[4]}
+                  thousandSeparator=","
+                  prefix={"$"}
+                  onValueChange={(values, sourceInfo) => {
+                    const arrayName = "newYearly";
+                    const i = 4;
+                    const isEvent = sourceInfo.source === "event";
+                    if (isEvent) {
+                      const enteredValue = values.floatValue;
+                      hourlyBase =
+                        values.floatValue / 52 / 5 / 8 / (1 + superRate);
+                      calculationFromBase(
+                        enteredValue,
+                        newSuperRate,
+                        newNumDayOff,
+                        hourlyBase,
+                        setHourly,
+                        setDaily,
+                        setWeekly,
+                        setFortnightly,
+                        setMonthly,
+                        setYearly,
+                        GST,
+                        isContract,
+                        arrayName,
+                        i
+                      );
+                    }
+                  }}
+                />
+                {/* <input
                   key="yearlyPackage"
                   name="yearlyPackage"
                   value={yearly[4]}
@@ -608,11 +1345,29 @@ const Table = () => {
                       isContract
                     );
                   }}
+                /> */}
+              </td>
+            )}
+            {newIsContract && (
+              <td id="yearlyGST">
+                <NumericFormat
+                  displayType="text"
+                  value={yearly[5]}
+                  thousandSeparator=","
+                  prefix={"$"}
                 />
               </td>
             )}
-            {newIsContract && <td id="yearlyGST">{yearly[5]}</td>}
-            {newIsContract && <td>{yearly[6]}</td>}
+            {newIsContract && (
+              <td>
+                <NumericFormat
+                  displayType="text"
+                  value={yearly[6]}
+                  thousandSeparator=","
+                  prefix={"$"}
+                />
+              </td>
+            )}
           </tr>
         </tbody>
       </table>

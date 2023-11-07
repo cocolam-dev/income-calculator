@@ -1,4 +1,5 @@
-const CalculationFromBase = (
+const calculationFromBase = (
+  enteredValue,
   newSuperRate,
   newNumDayOff,
   hourlyBase,
@@ -9,7 +10,9 @@ const CalculationFromBase = (
   setMonthly,
   setYearly,
   GST,
-  isContract
+  isContract,
+  arrayName,
+  i
 ) => {
   let newHourly = [];
   let newDaily = [];
@@ -17,6 +20,15 @@ const CalculationFromBase = (
   let newFortnightly = [];
   let newMonthly = [];
   let newYearly = [];
+  let arrayGroup = {
+    newHourly,
+    newDaily,
+    newWeekly,
+    newFortnightly,
+    newMonthly,
+    newYearly,
+  };
+
   let FactorOfReductionByDaysOff = 0;
 
   isContract && hourlyBase > 0
@@ -139,6 +151,10 @@ const CalculationFromBase = (
   newMonthly[0] = parseFloat(newMonthly[2]) - parseFloat(newMonthly[1]);
   newYearly[0] = parseFloat(newYearly[2]) - parseFloat(newYearly[1]);
 
+  if (arrayName) {
+    arrayGroup[arrayName][i] = enteredValue;
+  }
+
   for (let i = 0; i <= 6; i++) {
     newHourly[i] = parseFloat(newHourly[i]).toFixed();
     newDaily[i] = parseFloat(newDaily[i]).toFixed();
@@ -156,4 +172,4 @@ const CalculationFromBase = (
   setYearly(newYearly);
 };
 
-export default CalculationFromBase;
+export default calculationFromBase;
