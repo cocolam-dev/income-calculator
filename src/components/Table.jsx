@@ -1,11 +1,13 @@
+import FYData from "./FYData";
 import { useGlobalContext } from "./GlobalContext";
 import calculationFromBase from "./calculationFromBase";
 import { NumericFormat } from "react-number-format";
 
 let hourlyBase = 0;
 let newNumDayOff = 9;
-let newSuperRate = 0.11;
+let newSuperRate = 0.115;
 let newIsContract = "True";
+let newYear = "FY2425";
 
 const Table = () => {
   const {
@@ -67,6 +69,7 @@ const Table = () => {
                   null,
                   newSuperRate,
                   newNumDayOff,
+                  newYear,
                   hourlyBase,
                   setHourly,
                   setDaily,
@@ -83,8 +86,9 @@ const Table = () => {
         )}
         <div className="AdjustmentFormField">
           <label>Superannuation rate (%)</label>
-          <input
-            defaultValue="11"
+          {/* <input
+            defaultValue="11.5"
+            value={newSuperRate * 100}
             onChange={(e) => {
               newSuperRate = e.target.value / 100;
               setSuperRate(newSuperRate);
@@ -92,6 +96,7 @@ const Table = () => {
                 null,
                 newSuperRate,
                 newNumDayOff,
+                newYear,
                 hourlyBase,
                 setHourly,
                 setDaily,
@@ -103,23 +108,81 @@ const Table = () => {
                 isContract
               );
             }}
-          />
+          /> */}
+
+          <p>{newSuperRate * 100}%</p>
+        </div>
+        <div className="AdjustmentFormField">
+          <label>Financial year (for income tax purpose)</label>
+          <select
+            onChange={(e) => {
+              if (e.target.value === "FY2023-24 (1 July 23 - 30 June 24)") {
+                newYear = "FY2324";
+                setYear("FY2324");
+                newSuperRate = FYData[newYear].superRate;
+                setSuperRate(newSuperRate);
+                calculationFromBase(
+                  null,
+                  newSuperRate,
+                  newNumDayOff,
+                  newYear,
+                  hourlyBase,
+                  setHourly,
+                  setDaily,
+                  setWeekly,
+                  setFortnightly,
+                  setMonthly,
+                  setYearly,
+                  GST,
+                  isContract
+                );
+              } else if (
+                e.target.value === "FY2024-25 (1 July 24 - 30 June 25)"
+              ) {
+                newYear = "FY2425";
+                setYear("FY2425");
+                newSuperRate = FYData[newYear].superRate;
+                setSuperRate(newSuperRate);
+                calculationFromBase(
+                  null,
+                  newSuperRate,
+                  newNumDayOff,
+                  newYear,
+                  hourlyBase,
+                  setHourly,
+                  setDaily,
+                  setWeekly,
+                  setFortnightly,
+                  setMonthly,
+                  setYearly,
+                  GST,
+                  isContract
+                );
+              }
+            }}
+          >
+            <option>FY2024-25 (1 July 24 - 30 June 25)</option>
+            <option>FY2023-24 (1 July 23 - 30 June 24)</option>
+          </select>
         </div>
       </form>
 
       <h5>Assumptions & Rates applied:</h5>
       <p className="SmallText">
-        52 weeks in a year, 5 work days in a week, 8 hours in a day, total 260
-        work days in a year
+        52 weeks in a year, 5 work days in a week, 8 work hours in a day, total
+        260 work days in a year
       </p>
       <p className="SmallText">
         Only Year row is adjusted by number of days off for contractors
       </p>
       <p className="SmallText">Country: Australia</p>
       <p className="SmallText">
-        Financial Year for income tax calculation purpose: 2023-24
+        Financial Year for income tax calculation purpose: {newYear}
       </p>
       <p className="SmallText">GST: {GST * 100}%</p>
+      <p className="SmallText">Super guarantee:</p>
+      <p className="SmallText"> - FY2324: 11%</p>
+      <p className="SmallText"> - FY2425: 11.5%</p>
 
       <table>
         <tbody>
@@ -184,6 +247,7 @@ const Table = () => {
                       enteredValue,
                       newSuperRate,
                       newNumDayOff,
+                      newYear,
                       hourlyBase,
                       setHourly,
                       setDaily,
@@ -241,11 +305,12 @@ const Table = () => {
                   const isEvent = sourceInfo.source === "event";
                   if (isEvent) {
                     const enteredValue = values.floatValue;
-                    hourlyBase = values.floatValue / (1 + superRate);
+                    hourlyBase = values.floatValue / (1 + newSuperRate);
                     calculationFromBase(
                       enteredValue,
                       newSuperRate,
                       newNumDayOff,
+                      newYear,
                       hourlyBase,
                       setHourly,
                       setDaily,
@@ -307,11 +372,12 @@ const Table = () => {
                     if (isEvent) {
                       const enteredValue = values.floatValue;
                       hourlyBase =
-                        values.floatValue / (1 + GST) / (1 + superRate);
+                        values.floatValue / (1 + GST) / (1 + newSuperRate);
                       calculationFromBase(
                         enteredValue,
                         newSuperRate,
                         newNumDayOff,
+                        newYear,
                         hourlyBase,
                         setHourly,
                         setDaily,
@@ -384,6 +450,7 @@ const Table = () => {
                       enteredValue,
                       newSuperRate,
                       newNumDayOff,
+                      newYear,
                       hourlyBase,
                       setHourly,
                       setDaily,
@@ -446,6 +513,7 @@ const Table = () => {
                       enteredValue,
                       newSuperRate,
                       newNumDayOff,
+                      newYear,
                       hourlyBase,
                       setHourly,
                       setDaily,
@@ -513,6 +581,7 @@ const Table = () => {
                         enteredValue,
                         newSuperRate,
                         newNumDayOff,
+                        newYear,
                         hourlyBase,
                         setHourly,
                         setDaily,
@@ -649,6 +718,7 @@ const Table = () => {
                       enteredValue,
                       newSuperRate,
                       newNumDayOff,
+                      newYear,
                       hourlyBase,
                       setHourly,
                       setDaily,
@@ -715,6 +785,7 @@ const Table = () => {
                         enteredValue,
                         newSuperRate,
                         newNumDayOff,
+                        newYear,
                         hourlyBase,
                         setHourly,
                         setDaily,
@@ -790,6 +861,7 @@ const Table = () => {
                       enteredValue,
                       newSuperRate,
                       newNumDayOff,
+                      newYear,
                       hourlyBase,
                       setHourly,
                       setDaily,
@@ -854,6 +926,7 @@ const Table = () => {
                       enteredValue,
                       newSuperRate,
                       newNumDayOff,
+                      newYear,
                       hourlyBase,
                       setHourly,
                       setDaily,
@@ -925,6 +998,7 @@ const Table = () => {
                         enteredValue,
                         newSuperRate,
                         newNumDayOff,
+                        newYear,
                         hourlyBase,
                         setHourly,
                         setDaily,
@@ -1000,6 +1074,7 @@ const Table = () => {
                       enteredValue,
                       newSuperRate,
                       newNumDayOff,
+                      newYear,
                       hourlyBase,
                       setHourly,
                       setDaily,
@@ -1063,6 +1138,7 @@ const Table = () => {
                       enteredValue,
                       newSuperRate,
                       newNumDayOff,
+                      newYear,
                       hourlyBase,
                       setHourly,
                       setDaily,
@@ -1137,6 +1213,7 @@ const Table = () => {
                         enteredValue,
                         newSuperRate,
                         newNumDayOff,
+                        newYear,
                         hourlyBase,
                         setHourly,
                         setDaily,
@@ -1187,7 +1264,9 @@ const Table = () => {
               {newIsContract ? (
                 <>
                   Year <br />{" "}
-                  <p className="SmallerText">(reduced by # of days off)</p>
+                  <p className="SmallerText">
+                    (Only year row is reduced by # of days off)
+                  </p>
                 </>
               ) : (
                 "Year"
@@ -1236,6 +1315,7 @@ const Table = () => {
                         enteredValue,
                         newSuperRate,
                         newNumDayOff,
+                        newYear,
                         hourlyBase,
                         setHourly,
                         setDaily,
@@ -1310,6 +1390,7 @@ const Table = () => {
                         enteredValue,
                         newSuperRate,
                         newNumDayOff,
+                        newYear,
                         hourlyBase,
                         setHourly,
                         setDaily,

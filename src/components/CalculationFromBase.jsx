@@ -1,7 +1,10 @@
+import FYData from "./FYData";
+
 const calculationFromBase = (
   enteredValue,
   newSuperRate,
   newNumDayOff,
+  newYear,
   hourlyBase,
   setHourly,
   setDaily,
@@ -111,36 +114,65 @@ const calculationFromBase = (
   //Total
   newYearly[6] = parseFloat(newYearly[4]) + parseFloat(newYearly[5]);
 
-  //calculate income tax [1]
-  if (newMonthly[2] * 12 < 18200) {
-    newHourly[1] = 0;
-    newDaily[1] = 0;
-    newWeekly[1] = 0;
-    newFortnightly[1] = 0;
-    newMonthly[1] = 0;
-    newYearly[1] = 0;
-  } else if (newMonthly[2] * 12 > 18200 && newMonthly[2] * 12 <= 45000) {
-    newMonthly[1] = (0.19 * (parseFloat(newMonthly[2]) * 12 - 18200)) / 12;
-  } else if (newMonthly[2] * 12 > 45000 && newMonthly[2] * 12 <= 120000) {
-    newMonthly[1] =
-      (5092 + 0.325 * (parseFloat(newMonthly[2]) * 12 - 45000)) / 12;
-  } else if (newMonthly[2] * 12 > 120000 && newMonthly[2] * 12 <= 180000) {
-    newMonthly[1] = (
-      (29467 + 0.37 * (parseFloat(newMonthly[2]) * 12 - 120000)) /
-      12
-    ).toFixed();
-  } else if (newMonthly[2] * 12 > 180000) {
-    newMonthly[1] = (
-      (51667 + 0.45 * (parseFloat(newMonthly[2]) * 12 - 180000)) /
-      12
-    ).toFixed();
+  //==============================================
+
+  //calculate income tax [1] - with incomeTaxRate objects
+
+  let taxBrackets = FYData[newYear].taxBrackets;
+
+  let yearlyBase = newMonthly[2] * 12;
+
+  for (let i = 0; i < taxBrackets.length; i++) {
+    const taxBracket = taxBrackets[i];
+    if (
+      yearlyBase > taxBracket.min &&
+      (yearlyBase <= taxBracket.max || i === taxBrackets.length - 1)
+    ) {
+      newMonthly[1] = (
+        (taxBracket.flat +
+          taxBracket.percent * (yearlyBase - taxBracket.over)) /
+        12
+      ).toFixed();
+      break;
+    }
   }
+
+  //==============================================
+  //calculate income tax [1] -- hardcoded tax rates
+  // if (newMonthly[2] * 12 < 18200) {
+  //   newHourly[1] = 0;
+  //   newDaily[1] = 0;
+  //   newWeekly[1] = 0;
+  //   newFortnightly[1] = 0;
+  //   newMonthly[1] = 0;
+  //   newYearly[1] = 0;
+  // } else if (newMonthly[2] * 12 > 18200 && newMonthly[2] * 12 <= 45000) {
+  //   newMonthly[1] = (0.19 * (parseFloat(newMonthly[2]) * 12 - 18200)) / 12;
+  // } else if (newMonthly[2] * 12 > 45000 && newMonthly[2] * 12 <= 120000) {
+  //   newMonthly[1] =
+  //     (5092 + 0.325 * (parseFloat(newMonthly[2]) * 12 - 45000)) / 12;
+  // } else if (newMonthly[2] * 12 > 120000 && newMonthly[2] * 12 <= 180000) {
+  //   newMonthly[1] = (
+  //     (29467 + 0.37 * (parseFloat(newMonthly[2]) * 12 - 120000)) /
+  //     12
+  //   ).toFixed();
+  // } else if (newMonthly[2] * 12 > 180000) {
+  //   newMonthly[1] = (
+  //     (51667 + 0.45 * (parseFloat(newMonthly[2]) * 12 - 180000)) /
+  //     12
+  //   ).toFixed();
+  // }
+
+  //==============================================
+
   newHourly[1] = (parseFloat(newMonthly[1]) * 12) / 52 / 5 / 8;
   newDaily[1] = parseFloat(newHourly[1]) * 8;
   newWeekly[1] = parseFloat(newHourly[1]) * 8 * 5;
   newFortnightly[1] = parseFloat(newHourly[1]) * 8 * 5 * 2;
   newMonthly[1] = (parseFloat(newHourly[1]) * 8 * 5 * 52) / 12;
   newYearly[1] = parseFloat(newDaily[1]) * 5 * 52 * FactorOfReductionByDaysOff;
+
+  //==============================================
 
   //calculate after-tax income [0]
   newHourly[0] = parseFloat(newHourly[2]) - parseFloat(newHourly[1]);

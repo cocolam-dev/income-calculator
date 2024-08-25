@@ -11,8 +11,8 @@ const AppContext = ({ children }) => {
   const [fortnightly, setFortnightly] = useState([0, 0, 0, 0, 0, 0, 0]);
   const [monthly, setMonthly] = useState([0, 0, 0, 0, 0, 0, 0]);
   const [yearly, setYearly] = useState([0, 0, 0, 0, 0, 0, 0]);
-  const [year, setYear] = useState("2023-24");
-  const [superRate, setSuperRate] = useState(0.11);
+  const [year, setYear] = useState("FY2425");
+  const [superRate, setSuperRate] = useState(0.115);
   const [GST, setGST] = useState(0.1);
   const [numDayOff, setNumDayOff] = useState(9);
   const [isContract, setIsContract] = useState(true);
