@@ -1,11 +1,13 @@
+import FYData from "./FYData";
 import { useGlobalContext } from "./GlobalContext";
-import calculationFromBase from "./calculationFromBase";
+import calculationFromBase from "./CalculationFromBase";
 import { NumericFormat } from "react-number-format";
 
 let hourlyBase = 0;
 let newNumDayOff = 9;
-let newSuperRate = 0.11;
+let newSuperRate = 0.115;
 let newIsContract = "True";
+let newYear = "FY2425";
 
 const Table = () => {
   const {
@@ -67,6 +69,7 @@ const Table = () => {
                   null,
                   newSuperRate,
                   newNumDayOff,
+                  newYear,
                   hourlyBase,
                   setHourly,
                   setDaily,
@@ -83,8 +86,9 @@ const Table = () => {
         )}
         <div className="AdjustmentFormField">
           <label>Superannuation rate (%)</label>
-          <input
-            defaultValue="11"
+          {/* <input
+            defaultValue="11.5"
+            value={newSuperRate * 100}
             onChange={(e) => {
               newSuperRate = e.target.value / 100;
               setSuperRate(newSuperRate);
@@ -92,6 +96,7 @@ const Table = () => {
                 null,
                 newSuperRate,
                 newNumDayOff,
+                newYear,
                 hourlyBase,
                 setHourly,
                 setDaily,
@@ -103,23 +108,81 @@ const Table = () => {
                 isContract
               );
             }}
-          />
+          /> */}
+
+          <p>{newSuperRate * 100}%</p>
+        </div>
+        <div className="AdjustmentFormField">
+          <label>Financial year (for income tax purpose)</label>
+          <select
+            onChange={(e) => {
+              if (e.target.value === "FY2023-24 (1 July 23 - 30 June 24)") {
+                newYear = "FY2324";
+                setYear("FY2324");
+                newSuperRate = FYData[newYear].superRate;
+                setSuperRate(newSuperRate);
+                calculationFromBase(
+                  null,
+                  newSuperRate,
+                  newNumDayOff,
+                  newYear,
+                  hourlyBase,
+                  setHourly,
+                  setDaily,
+                  setWeekly,
+                  setFortnightly,
+                  setMonthly,
+                  setYearly,
+                  GST,
+                  isContract
+                );
+              } else if (
+                e.target.value === "FY2024-25 (1 July 24 - 30 June 25)"
+              ) {
+                newYear = "FY2425";
+                setYear("FY2425");
+                newSuperRate = FYData[newYear].superRate;
+                setSuperRate(newSuperRate);
+                calculationFromBase(
+                  null,
+                  newSuperRate,
+                  newNumDayOff,
+                  newYear,
+                  hourlyBase,
+                  setHourly,
+                  setDaily,
+                  setWeekly,
+                  setFortnightly,
+                  setMonthly,
+                  setYearly,
+                  GST,
+                  isContract
+                );
+              }
+            }}
+          >
+            <option>FY2024-25 (1 July 24 - 30 June 25)</option>
+            <option>FY2023-24 (1 July 23 - 30 June 24)</option>
+          </select>
         </div>
       </form>
 
       <h5>Assumptions & Rates applied:</h5>
       <p className="SmallText">
-        52 weeks in a year, 5 work days in a week, 8 hours in a day, total 260
-        work days in a year
+        52 weeks in a year, 5 work days in a week, 8 work hours in a day, total
+        260 work days in a year
       </p>
       <p className="SmallText">
         Only Year row is adjusted by number of days off for contractors
       </p>
       <p className="SmallText">Country: Australia</p>
       <p className="SmallText">
-        Financial Year for income tax calculation purpose: 2023-24
+        Financial Year for income tax calculation purpose: {newYear}
       </p>
       <p className="SmallText">GST: {GST * 100}%</p>
+      <p className="SmallText">Super guarantee:</p>
+      <p className="SmallText"> - FY2324: 11%</p>
+      <p className="SmallText"> - FY2425: 11.5%</p>
 
       <table>
         <tbody>
@@ -154,7 +217,7 @@ const Table = () => {
             <td id="hourlyAfterTaxIncome">
               <NumericFormat
                 displayType="text"
-                value={hourly[0]}
+                value={hourly.afterTaxIncome}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -162,7 +225,7 @@ const Table = () => {
             <td id="hourlyIncomeTax">
               <NumericFormat
                 displayType="text"
-                value={hourly[1]}
+                value={hourly.incomeTax}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -170,7 +233,7 @@ const Table = () => {
             <td id="hourlyBaseIncome">
               <NumericFormat
                 type="text"
-                value={hourly[2]}
+                value={hourly.baseIncome}
                 thousandSeparator=","
                 prefix={"$"}
                 onValueChange={(values, sourceInfo) => {
@@ -184,6 +247,7 @@ const Table = () => {
                       enteredValue,
                       newSuperRate,
                       newNumDayOff,
+                      newYear,
                       hourlyBase,
                       setHourly,
                       setDaily,
@@ -202,7 +266,7 @@ const Table = () => {
               {/* <input
                 key="hourlyBaseIncome"
                 name="hourlyBaseIncome"
-                value={hourly[2]}
+                value={hourly.baseIncome}
                 onChange={(e) => {
                   hourlyBase = e.target.value;
                   CalculationFromBase(
@@ -224,7 +288,7 @@ const Table = () => {
             <td id="hourlySuper">
               <NumericFormat
                 displayType="text"
-                value={hourly[3]}
+                value={hourly.super}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -232,7 +296,7 @@ const Table = () => {
             <td id="hourlyPackage">
               <NumericFormat
                 type="text"
-                value={hourly[4]}
+                value={hourly.package}
                 thousandSeparator=","
                 prefix={"$"}
                 onValueChange={(values, sourceInfo) => {
@@ -241,11 +305,12 @@ const Table = () => {
                   const isEvent = sourceInfo.source === "event";
                   if (isEvent) {
                     const enteredValue = values.floatValue;
-                    hourlyBase = values.floatValue / (1 + superRate);
+                    hourlyBase = values.floatValue / (1 + newSuperRate);
                     calculationFromBase(
                       enteredValue,
                       newSuperRate,
                       newNumDayOff,
+                      newYear,
                       hourlyBase,
                       setHourly,
                       setDaily,
@@ -265,7 +330,7 @@ const Table = () => {
             {/* <input
               //   key="hourlyPackage"
               //   name="hourlyPackage"
-              //   value={hourly[4]}
+              //   value={hourly.package}
               //   onChange={(e) => {
               //     hourlyBase = e.target.value / (1 + superRate);
               //     CalculationFromBase(
@@ -287,7 +352,7 @@ const Table = () => {
               <td id="hourlyGST">
                 <NumericFormat
                   displayType="text"
-                  value={hourly[5]}
+                  value={hourly.gst}
                   thousandSeparator=","
                   prefix={"$"}
                 />
@@ -297,7 +362,7 @@ const Table = () => {
               <td id="hourlyTotal">
                 <NumericFormat
                   type="text"
-                  value={hourly[6]}
+                  value={hourly.total}
                   thousandSeparator=","
                   prefix={"$"}
                   onValueChange={(values, sourceInfo) => {
@@ -307,11 +372,12 @@ const Table = () => {
                     if (isEvent) {
                       const enteredValue = values.floatValue;
                       hourlyBase =
-                        values.floatValue / (1 + GST) / (1 + superRate);
+                        values.floatValue / (1 + GST) / (1 + newSuperRate);
                       calculationFromBase(
                         enteredValue,
                         newSuperRate,
                         newNumDayOff,
+                        newYear,
                         hourlyBase,
                         setHourly,
                         setDaily,
@@ -328,7 +394,7 @@ const Table = () => {
                   }}
                 />
                 {/* <input
-                  value={hourly[6]}
+                  value={hourly.total}
                   onChange={(e) => {
                     hourlyBase = e.target.value / (1 + GST) / (1 + superRate);
                     CalculationFromBase(
@@ -354,7 +420,7 @@ const Table = () => {
             <td id="dailyAfterTaxIncome">
               <NumericFormat
                 displayType="text"
-                value={daily[0]}
+                value={daily.afterTaxIncome}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -362,7 +428,7 @@ const Table = () => {
             <td id="dailyIncomeTax">
               <NumericFormat
                 displayType="text"
-                value={daily[1]}
+                value={daily.incomeTax}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -370,7 +436,7 @@ const Table = () => {
             <td id="dailyBaseIncome">
               <NumericFormat
                 type="text"
-                value={daily[2]}
+                value={daily.baseIncome}
                 thousandSeparator=","
                 prefix={"$"}
                 onValueChange={(values, sourceInfo) => {
@@ -384,6 +450,7 @@ const Table = () => {
                       enteredValue,
                       newSuperRate,
                       newNumDayOff,
+                      newYear,
                       hourlyBase,
                       setHourly,
                       setDaily,
@@ -402,7 +469,7 @@ const Table = () => {
               {/* <input
                 key="dailyBaseIncome"
                 name="dailyBaseIncome"
-                value={daily[2]}
+                value={daily.baseIncome}
                 onChange={(e) => {
                   hourlyBase = e.target.value / 8;
                   CalculationFromBase(
@@ -424,7 +491,7 @@ const Table = () => {
             <td id="dailySuper">
               <NumericFormat
                 displayType="text"
-                value={daily[3]}
+                value={daily.super}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -432,7 +499,7 @@ const Table = () => {
             <td id="dailyPackage">
               <NumericFormat
                 type="text"
-                value={daily[4]}
+                value={daily.package}
                 thousandSeparator=","
                 prefix={"$"}
                 onValueChange={(values, sourceInfo) => {
@@ -446,6 +513,7 @@ const Table = () => {
                       enteredValue,
                       newSuperRate,
                       newNumDayOff,
+                      newYear,
                       hourlyBase,
                       setHourly,
                       setDaily,
@@ -465,7 +533,7 @@ const Table = () => {
               {/* <input
                 key="dailyPackage"
                 name="dailyPackage"
-                value={daily[4]}
+                value={daily.package}
                 onChange={(e) => {
                   hourlyBase = e.target.value / 8 / (1 + superRate);
                   CalculationFromBase(
@@ -488,7 +556,7 @@ const Table = () => {
               <td id="dailyGST">
                 <NumericFormat
                   displayType="text"
-                  value={daily[5]}
+                  value={daily.gst}
                   thousandSeparator=","
                   prefix={"$"}
                 />
@@ -498,7 +566,7 @@ const Table = () => {
               <td id="dailyTotal">
                 <NumericFormat
                   type="text"
-                  value={daily[6]}
+                  value={daily.total}
                   thousandSeparator=","
                   prefix={"$"}
                   onValueChange={(values, sourceInfo) => {
@@ -513,6 +581,7 @@ const Table = () => {
                         enteredValue,
                         newSuperRate,
                         newNumDayOff,
+                        newYear,
                         hourlyBase,
                         setHourly,
                         setDaily,
@@ -529,7 +598,7 @@ const Table = () => {
                   }}
                 />
                 {/* <input
-                  value={daily[6]}
+                  value={daily.total}
                   onChange={(e) => {
                     hourlyBase =
                       e.target.value / 8 / (1 + GST) / (1 + superRate);
@@ -556,7 +625,7 @@ const Table = () => {
             <td id="weeklyAfterTaxIncome">
               <NumericFormat
                 displayType="text"
-                value={weekly[0]}
+                value={weekly.afterTaxIncome}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -564,7 +633,7 @@ const Table = () => {
             <td id="weeklyIncomeTax">
               <NumericFormat
                 displayType="text"
-                value={weekly[1]}
+                value={weekly.incomeTax}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -572,7 +641,7 @@ const Table = () => {
             <td id="weeklyBaseIncome">
               <NumericFormat
                 type="text"
-                value={weekly[2]}
+                value={weekly.baseIncome}
                 thousandSeparator=","
                 prefix={"$"}
                 onValueChange={(values, sourceInfo) => {
@@ -605,7 +674,7 @@ const Table = () => {
               {/* <input
                 key="weeklyBaseIncome"
                 name="weeklyBaseIncome"
-                value={weekly[2]}
+                value={weekly.baseIncome}
                 onChange={(e) => {
                   hourlyBase = e.target.value / 5 / 8;
                   CalculationFromBase(
@@ -627,7 +696,7 @@ const Table = () => {
             <td id="weeklySuper">
               <NumericFormat
                 displayType="text"
-                value={weekly[3]}
+                value={weekly.super}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -635,7 +704,7 @@ const Table = () => {
             <td id="weeklyPackage">
               <NumericFormat
                 type="text"
-                value={weekly[4]}
+                value={weekly.package}
                 thousandSeparator=","
                 prefix={"$"}
                 onValueChange={(values, sourceInfo) => {
@@ -649,6 +718,7 @@ const Table = () => {
                       enteredValue,
                       newSuperRate,
                       newNumDayOff,
+                      newYear,
                       hourlyBase,
                       setHourly,
                       setDaily,
@@ -667,7 +737,7 @@ const Table = () => {
               {/* <input
                 key="weeklyPackage"
                 name="weeklyPackage"
-                value={weekly[4]}
+                value={weekly.package}
                 onChange={(e) => {
                   hourlyBase = e.target.value / 5 / 8 / (1 + superRate);
                   CalculationFromBase(
@@ -690,7 +760,7 @@ const Table = () => {
               <td id="weeklyGST">
                 <NumericFormat
                   displayType="text"
-                  value={weekly[5]}
+                  value={weekly.gst}
                   thousandSeparator=","
                   prefix={"$"}
                 />
@@ -700,7 +770,7 @@ const Table = () => {
               <td id="weeklyTotal">
                 <NumericFormat
                   type="text"
-                  value={weekly[6]}
+                  value={weekly.total}
                   thousandSeparator=","
                   prefix={"$"}
                   onValueChange={(values, sourceInfo) => {
@@ -715,6 +785,7 @@ const Table = () => {
                         enteredValue,
                         newSuperRate,
                         newNumDayOff,
+                        newYear,
                         hourlyBase,
                         setHourly,
                         setDaily,
@@ -733,7 +804,7 @@ const Table = () => {
                 {/* <input
                   key="weeklyTotal"
                   name="weeklyTotal"
-                  value={weekly[6]}
+                  value={weekly.total}
                   onChange={(e) => {
                     hourlyBase =
                       e.target.value / 5 / 8 / (1 + GST) / (1 + superRate);
@@ -760,7 +831,7 @@ const Table = () => {
             <td id="fortnightlyAfterTaxIncome">
               <NumericFormat
                 displayType="text"
-                value={fortnightly[0]}
+                value={fortnightly.afterTaxIncome}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -768,7 +839,7 @@ const Table = () => {
             <td id="fortnightlyIncomeTax">
               <NumericFormat
                 displayType="text"
-                value={fortnightly[1]}
+                value={fortnightly.incomeTax}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -776,7 +847,7 @@ const Table = () => {
             <td id="fortnightlyBaseIncome">
               <NumericFormat
                 type="text"
-                value={fortnightly[2]}
+                value={fortnightly.baseIncome}
                 thousandSeparator=","
                 prefix={"$"}
                 onValueChange={(values, sourceInfo) => {
@@ -790,6 +861,7 @@ const Table = () => {
                       enteredValue,
                       newSuperRate,
                       newNumDayOff,
+                      newYear,
                       hourlyBase,
                       setHourly,
                       setDaily,
@@ -809,7 +881,7 @@ const Table = () => {
               {/* <input
                 key="fortnightlyBaseIncome"
                 name="fortnightlyBaseIncome"
-                value={fortnightly[2]}
+                value={fortnightly.baseIncome}
                 onChange={(e) => {
                   hourlyBase = e.target.value / 2 / 5 / 8;
                   CalculationFromBase(
@@ -831,7 +903,7 @@ const Table = () => {
             <td id="fortnightlySuper">
               <NumericFormat
                 displayType="text"
-                value={fortnightly[3]}
+                value={fortnightly.super}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -839,7 +911,7 @@ const Table = () => {
             <td id="fortnightlyPackage">
               <NumericFormat
                 type="text"
-                value={fortnightly[4]}
+                value={fortnightly.package}
                 thousandSeparator=","
                 prefix={"$"}
                 onValueChange={(values, sourceInfo) => {
@@ -854,6 +926,7 @@ const Table = () => {
                       enteredValue,
                       newSuperRate,
                       newNumDayOff,
+                      newYear,
                       hourlyBase,
                       setHourly,
                       setDaily,
@@ -872,7 +945,7 @@ const Table = () => {
               {/* <input
                 key="fortnightlyPackage"
                 name="fortnightlyPackage"
-                value={fortnightly[4]}
+                value={fortnightly.package}
                 onChange={(e) => {
                   hourlyBase = e.target.value / 2 / 5 / 8 / (1 + superRate);
                   CalculationFromBase(
@@ -895,7 +968,7 @@ const Table = () => {
               <td id="fortnightlyGST">
                 <NumericFormat
                   displayType="text"
-                  value={fortnightly[5]}
+                  value={fortnightly.gst}
                   thousandSeparator=","
                   prefix={"$"}
                 />
@@ -905,7 +978,7 @@ const Table = () => {
               <td id="fortnightlyTotal">
                 <NumericFormat
                   type="text"
-                  value={fortnightly[6]}
+                  value={fortnightly.total}
                   thousandSeparator=","
                   prefix={"$"}
                   onValueChange={(values, sourceInfo) => {
@@ -925,6 +998,7 @@ const Table = () => {
                         enteredValue,
                         newSuperRate,
                         newNumDayOff,
+                        newYear,
                         hourlyBase,
                         setHourly,
                         setDaily,
@@ -943,7 +1017,7 @@ const Table = () => {
                 {/* <input
                   key="fortnightlyTotal"
                   name="fortnightlyTotal"
-                  value={fortnightly[6]}
+                  value={fortnightly.total}
                   onChange={(e) => {
                     hourlyBase =
                       e.target.value / 2 / 5 / 8 / (1 + GST) / (1 + superRate);
@@ -970,7 +1044,7 @@ const Table = () => {
             <td id="monthlyAfterTaxIncome">
               <NumericFormat
                 displayType="text"
-                value={monthly[0]}
+                value={monthly.afterTaxIncome}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -978,7 +1052,7 @@ const Table = () => {
             <td id="monthlyTax">
               <NumericFormat
                 displayType="text"
-                value={monthly[1]}
+                value={monthly.incomeTax}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -986,7 +1060,7 @@ const Table = () => {
             <td id="monthlyBaseIncome">
               <NumericFormat
                 type="text"
-                value={monthly[2]}
+                value={monthly.baseIncome}
                 thousandSeparator=","
                 prefix={"$"}
                 onValueChange={(values, sourceInfo) => {
@@ -1000,6 +1074,7 @@ const Table = () => {
                       enteredValue,
                       newSuperRate,
                       newNumDayOff,
+                      newYear,
                       hourlyBase,
                       setHourly,
                       setDaily,
@@ -1018,7 +1093,7 @@ const Table = () => {
               {/* <input
                 key="monthlyBaseIncome"
                 name="monthlyBaseIncome"
-                value={monthly[2]}
+                value={monthly.baseIncome}
                 onChange={(e) => {
                   hourlyBase = (e.target.value * 12) / 52 / 5 / 8;
                   CalculationFromBase(
@@ -1040,7 +1115,7 @@ const Table = () => {
             <td id="monthlySuper">
               <NumericFormat
                 displayType="text"
-                value={monthly[3]}
+                value={monthly.super}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -1048,7 +1123,7 @@ const Table = () => {
             <td id="monthlyPackage">
               <NumericFormat
                 type="text"
-                value={monthly[4]}
+                value={monthly.package}
                 thousandSeparator=","
                 prefix={"$"}
                 onValueChange={(values, sourceInfo) => {
@@ -1063,6 +1138,7 @@ const Table = () => {
                       enteredValue,
                       newSuperRate,
                       newNumDayOff,
+                      newYear,
                       hourlyBase,
                       setHourly,
                       setDaily,
@@ -1081,7 +1157,7 @@ const Table = () => {
               {/* <input
                 key="monthlyPackage"
                 name="monthlyPackage"
-                value={monthly[4]}
+                value={monthly.package}
                 onChange={(e) => {
                   hourlyBase =
                     (e.target.value * 12) / 52 / 5 / 8 / (1 + superRate);
@@ -1105,7 +1181,7 @@ const Table = () => {
               <td id="monthlyGST">
                 <NumericFormat
                   displayType="text"
-                  value={monthly[5]}
+                  value={monthly.gst}
                   thousandSeparator=","
                   prefix={"$"}
                 />
@@ -1116,7 +1192,7 @@ const Table = () => {
               <td id="monthlyTotal">
                 <NumericFormat
                   type="text"
-                  value={monthly[6]}
+                  value={monthly.total}
                   thousandSeparator=","
                   prefix={"$"}
                   onValueChange={(values, sourceInfo) => {
@@ -1137,6 +1213,7 @@ const Table = () => {
                         enteredValue,
                         newSuperRate,
                         newNumDayOff,
+                        newYear,
                         hourlyBase,
                         setHourly,
                         setDaily,
@@ -1155,7 +1232,7 @@ const Table = () => {
                 {/* <input
                   key="monthlyTotal"
                   name="monthlyTotal"
-                  value={monthly[6]}
+                  value={monthly.total}
                   onChange={(e) => {
                     hourlyBase =
                       (e.target.value * 12) /
@@ -1187,7 +1264,9 @@ const Table = () => {
               {newIsContract ? (
                 <>
                   Year <br />{" "}
-                  <p className="SmallerText">(reduced by # of days off)</p>
+                  <p className="SmallerText">
+                    (Only year row is reduced by # of days off)
+                  </p>
                 </>
               ) : (
                 "Year"
@@ -1196,7 +1275,7 @@ const Table = () => {
             <td id="yearlyAfterTaxIncome">
               <NumericFormat
                 displayType="text"
-                value={yearly[0]}
+                value={yearly.afterTaxIncome}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -1204,7 +1283,7 @@ const Table = () => {
             <td id="yearlyIncomeTax">
               <NumericFormat
                 displayType="text"
-                value={yearly[1]}
+                value={yearly.incomeTax}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -1213,7 +1292,7 @@ const Table = () => {
               <td>
                 <NumericFormat
                   displayType="text"
-                  value={yearly[2]}
+                  value={yearly.baseIncome}
                   thousandSeparator=","
                   prefix={"$"}
                 />
@@ -1222,7 +1301,7 @@ const Table = () => {
               <td id="yearlyBaseIncome">
                 <NumericFormat
                   type="text"
-                  value={yearly[2]}
+                  value={yearly.baseIncome}
                   thousandSeparator=","
                   prefix={"$"}
                   onValueChange={(values, sourceInfo) => {
@@ -1236,6 +1315,7 @@ const Table = () => {
                         enteredValue,
                         newSuperRate,
                         newNumDayOff,
+                        newYear,
                         hourlyBase,
                         setHourly,
                         setDaily,
@@ -1254,7 +1334,7 @@ const Table = () => {
                 {/* <input
                   key="yearlyBaseIncome"
                   name="yearlyBaseIncome"
-                  value={yearly[2]}
+                  value={yearly.baseIncome}
                   onChange={(e) => {
                     hourlyBase = e.target.value / 52 / 5 / 8;
                     CalculationFromBase(
@@ -1277,7 +1357,7 @@ const Table = () => {
             <td id="yearlySuper">
               <NumericFormat
                 displayType="text"
-                value={yearly[3]}
+                value={yearly.super}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -1286,7 +1366,7 @@ const Table = () => {
               <td>
                 <NumericFormat
                   displayType="text"
-                  value={yearly[4]}
+                  value={yearly.package}
                   thousandSeparator=","
                   prefix={"$"}
                 />
@@ -1295,7 +1375,7 @@ const Table = () => {
               <td id="yearlyPackage">
                 <NumericFormat
                   type="text"
-                  value={yearly[4]}
+                  value={yearly.package}
                   thousandSeparator=","
                   prefix={"$"}
                   onValueChange={(values, sourceInfo) => {
@@ -1310,6 +1390,7 @@ const Table = () => {
                         enteredValue,
                         newSuperRate,
                         newNumDayOff,
+                        newYear,
                         hourlyBase,
                         setHourly,
                         setDaily,
@@ -1328,7 +1409,7 @@ const Table = () => {
                 {/* <input
                   key="yearlyPackage"
                   name="yearlyPackage"
-                  value={yearly[4]}
+                  value={yearly.package}
                   onChange={(e) => {
                     hourlyBase = e.target.value / 52 / 5 / 8 / (1 + superRate);
                     CalculationFromBase(
@@ -1352,7 +1433,7 @@ const Table = () => {
               <td id="yearlyGST">
                 <NumericFormat
                   displayType="text"
-                  value={yearly[5]}
+                  value={yearly.gst}
                   thousandSeparator=","
                   prefix={"$"}
                 />
@@ -1362,7 +1443,7 @@ const Table = () => {
               <td>
                 <NumericFormat
                   displayType="text"
-                  value={yearly[6]}
+                  value={yearly.total}
                   thousandSeparator=","
                   prefix={"$"}
                 />
