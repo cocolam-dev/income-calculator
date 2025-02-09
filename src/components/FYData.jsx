@@ -1,6 +1,7 @@
 const FYData = {
   FY2425: {
     superRate: 0.115,
+    medicareLevy: 0.02,
     taxBrackets: [
       {
         min: 0,
@@ -41,6 +42,7 @@ const FYData = {
   },
   FY2324: {
     superRate: 0.11,
+    medicareLevy: 0.02,
     taxBrackets: [
       {
         min: 0,

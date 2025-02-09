@@ -59,7 +59,7 @@ h5 {
 
 .AdjustmentForm {
   display: grid;
-  margin: 2rem 0;
+  margin: 2rem auto;
   max-width: 40rem;
 }
 
@@ -67,7 +67,6 @@ h5 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   margin: 1rem;
-  /* justify-content: right; */
 }
 
 label {

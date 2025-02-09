@@ -1,53 +1,25 @@
 import FYData from "./FYData";
-import { useEffect } from "react";
 import { useGlobalContext } from "./GlobalContext";
+import CalculationFromBase from "./CalculationFromBase";
+import { NumericFormat } from "react-number-format";
+import { useEffect } from "react";
 
-// const calculationFromBase = (
-//   enteredValue,
-//   newSuperRate,
-//   newNumDayOff,
-//   newYear,
-//   hourlyBase,
-//   setHourly,
-//   setDaily,
-//   setWeekly,
-//   setFortnightly,
-//   setMonthly,
-//   setYearly,
-//   GST,
-//   isContract,
-//   arrayName,
-//   i
-// ) => {
-//   let newHourly = {};
-//   let newDaily = {};
-//   let newWeekly = {};
-//   let newFortnightly = {};
-//   let newMonthly = {};
-//   let newYearly = {};
-//   let arrayGroup = {
-//     newHourly,
-//     newDaily,
-//     newWeekly,
-//     newFortnightly,
-//     newMonthly,
-//     newYearly,
-//   };
-
-const CalculationFromBase = () => {
+const TableOld = () => {
   const {
-    hourly,
-    setHourly,
-    daily,
-    setDaily,
-    weekly,
-    setWeekly,
-    fortnightly,
-    setFortnightly,
-    monthly,
-    setMonthly,
-    yearly,
-    setYearly,
+    base,
+    setBase,
+    superAmt,
+    setSuperAmt,
+    packageAmt,
+    setPackageAmt,
+    gstAmt,
+    setGstAmt,
+    total,
+    setTotal,
+    incomeTax,
+    setIncomeTax,
+    afterTaxIncome,
+    setAfterTaxIncome,
     year,
     setYear,
     superRate,
@@ -60,191 +32,91 @@ const CalculationFromBase = () => {
     setIsContract,
   } = useGlobalContext();
 
-  let hourlyBase = 0;
-
   let factorOfReductionByDaysOff = 0;
 
-  isContract && hourlyBase > 0
-    ? (factorOfReductionByDaysOff = 1 - newNumDayOff / 260)
+  isContract && base.hourly > 0
+    ? (factorOfReductionByDaysOff = 1 - numDayOff / 260)
     : (factorOfReductionByDaysOff = 1);
 
-  //===HOURLY===
-  //calculate new hourly base income
-  newHourly.baseIncome = parseFloat(hourlyBase);
-  //calculate new hourly super
-  newHourly.super = parseFloat(hourlyBase) * newSuperRate;
-  //calculate new hourly package
-  newHourly.package =
-    parseFloat(newHourly.baseIncome) + parseFloat(newHourly.super);
-  //calculate new hourly GST
-  newHourly.gst = parseFloat(newHourly.package) * parseFloat(GST);
-  //calculate new hourly total
-  newHourly.total = parseFloat(newHourly.package) + parseFloat(newHourly.gst);
+  let hourlyBase = 0;
 
-  //===DAILY===
-  //base income
-  newDaily.baseIncome = parseFloat(hourlyBase * 8);
-  //super
-  newDaily.super = newDaily.baseIncome * newSuperRate;
-  //package
-  newDaily.package =
-    parseFloat(newDaily.baseIncome) + parseFloat(newDaily.super);
-  //GST
-  newDaily.gst = parseFloat(newDaily.package) * parseFloat(GST);
-  //Total
-  newDaily.total = parseFloat(newDaily.package) + parseFloat(newDaily.gst);
+  // useEffect(() => {
+  //   //===HOURLY===
+  //   //calculate new hourly base income
+  //   // base.hourly = parseFloat(hourlyBase);
+  //   //calculate new hourly super
+  //   superAmt.hourly = (parseFloat(hourlyBase) * superRate).toFixed(2);
 
-  //===WEEKLY===
-  //base income
-  newWeekly.baseIncome = parseFloat(hourlyBase * 8 * 5);
-  //super
-  newWeekly.super = newWeekly.baseIncome * newSuperRate;
-  //package
-  newWeekly.package =
-    parseFloat(newWeekly.baseIncome) + parseFloat(newWeekly.super);
-  //GST
-  newWeekly.gst = parseFloat(newWeekly.package) * parseFloat(GST);
-  //Total
-  newWeekly.total = parseFloat(newWeekly.package) + parseFloat(newWeekly.gst);
+  //   //calculate new hourly package
+  //   packageAmt.hourly = (
+  //     parseFloat(base.hourly) + parseFloat(superAmt.hourly)
+  //   ).toFixed(2);
+  //   //calculate new hourly GST
+  //   gstAmt.hourly = (parseFloat(packageAmt.hourly) * parseFloat(GST)).toFixed(
+  //     2
+  //   );
+  //   //calculate new hourly total
+  //   total.hourly = (
+  //     parseFloat(packageAmt.hourly) + parseFloat(gstAmt.hourly)
+  //   ).toFixed(2);
+  // }, [
+  //   hourlyBase,
+  //   GST,
+  //   base,
+  //   superAmt,
+  //   packageAmt,
+  //   gstAmt,
+  //   total,
+  //   superRate,
+  //   setBase,
+  //   setSuperRate,
+  // ]);
 
-  //===FORTNIGHTLY===
-  //base income
-  newFortnightly.baseIncome = parseFloat(hourlyBase * 8 * 5 * 2);
-  //super
-  newFortnightly.super = newFortnightly.baseIncome * newSuperRate;
-  //package
-  newFortnightly.package =
-    parseFloat(newFortnightly.baseIncome) + parseFloat(newFortnightly.super);
-  //GST
-  newFortnightly.gst = parseFloat(newFortnightly.package) * parseFloat(GST);
-  //Total
-  newFortnightly.total =
-    parseFloat(newFortnightly.package) + parseFloat(newFortnightly.gst);
+  useEffect(() => {
+    let newSuperAmtHourly = (parseFloat(base.hourly) * superRate).toFixed(2);
+    setSuperAmt({ hourly: newSuperAmtHourly });
 
-  //===MONTHLY===
-  //base income
-  newMonthly.baseIncome = parseFloat((hourlyBase * 8 * 5 * 52) / 12);
-  //super
-  newMonthly.super = newMonthly.baseIncome * newSuperRate;
-  //package
-  newMonthly.package =
-    parseFloat(newMonthly.baseIncome) + parseFloat(newMonthly.super);
-  //GST
-  newMonthly.gst = parseFloat(newMonthly.package) * parseFloat(GST);
-  //Total
-  newMonthly.total =
-    parseFloat(newMonthly.package) + parseFloat(newMonthly.gst);
+    let newPackageAmtHourly = (
+      parseFloat(base.hourly) + parseFloat(newSuperAmtHourly)
+    ).toFixed(2);
+    setPackageAmt({ hourly: newPackageAmtHourly });
 
-  //===YEARLY===
-  //base income
-  newYearly.baseIncome = parseFloat(
-    hourlyBase * 8 * 5 * 52 * factorOfReductionByDaysOff
-  );
-  //super
-  newYearly.super = newYearly.baseIncome * newSuperRate;
-  //package
-  newYearly.package =
-    parseFloat(newYearly.baseIncome) + parseFloat(newYearly.super);
-  //GST
-  newYearly.gst = parseFloat(newYearly.package) * parseFloat(GST);
-  //Total
-  newYearly.total = parseFloat(newYearly.package) + parseFloat(newYearly.gst);
+    let newGstAmtHourly = (
+      parseFloat(newPackageAmtHourly) * parseFloat(GST)
+    ).toFixed(2);
+    setGstAmt({ hourly: newGstAmtHourly });
 
-  //==============================================
+    let newTotalHourly = (
+      parseFloat(newPackageAmtHourly) + parseFloat(newGstAmtHourly)
+    ).toFixed(2);
+    setTotal({ hourly: newTotalHourly });
 
-  //calculate income tax [1] - with incomeTaxRate objects
+    //calculate income tax
+    let taxBrackets = FYData[year].taxBrackets;
 
-  let taxBrackets = FYData[newYear].taxBrackets;
+    let yearlyBase = base.hourly * 8 * 260;
 
-  let yearlyBase = newMonthly.baseIncome * 12;
+    for (let i = 0; i < taxBrackets.length; i++) {
+      const taxBracket = taxBrackets[i];
+      if (
+        yearlyBase > taxBracket.min &&
+        (yearlyBase <= taxBracket.max || i === taxBrackets.length - 1)
+      ) {
+        let newIncomeTaxHourly = (
+          (taxBracket.flat +
+            taxBracket.percent * (yearlyBase - taxBracket.over)) /
+          260 /
+          8
+        ).toFixed();
+        setIncomeTax({ hourly: newIncomeTaxHourly });
 
-  for (let i = 0; i < taxBrackets.length; i++) {
-    const taxBracket = taxBrackets[i];
-    if (
-      yearlyBase > taxBracket.min &&
-      (yearlyBase <= taxBracket.max || i === taxBrackets.length - 1)
-    ) {
-      newMonthly.incomeTax = (
-        (taxBracket.flat +
-          taxBracket.percent * (yearlyBase - taxBracket.over)) /
-        12
-      ).toFixed();
-      break;
+        //calculate after-tax income
+        let afterTaxIncomeHourly = base.hourly - newIncomeTaxHourly;
+        setAfterTaxIncome({ hourly: afterTaxIncomeHourly });
+        break;
+      }
     }
-  }
-
-  //==============================================
-  //calculate income tax [1] -- hardcoded tax rates
-  // if (newMonthly.baseIncome * 12 < 18200) {
-  //   newHourly.incomeTax = 0;
-  //   newDaily.incomeTax = 0;
-  //   newWeekly.incomeTax = 0;
-  //   newFortnightly.incomeTax = 0;
-  //   newMonthly.incomeTax = 0;
-  //   newYearly.incomeTax = 0;
-  // } else if (newMonthly.baseIncome * 12 > 18200 && newMonthly.baseIncome * 12 <= 45000) {
-  //   newMonthly.incomeTax = (0.19 * (parseFloat(newMonthly.baseIncome) * 12 - 18200)) / 12;
-  // } else if (newMonthly.baseIncome * 12 > 45000 && newMonthly.baseIncome * 12 <= 120000) {
-  //   newMonthly.incomeTax =
-  //     (5092 + 0.325 * (parseFloat(newMonthly.baseIncome) * 12 - 45000)) / 12;
-  // } else if (newMonthly.baseIncome * 12 > 120000 && newMonthly.baseIncome * 12 <= 180000) {
-  //   newMonthly.incomeTax = (
-  //     (29467 + 0.37 * (parseFloat(newMonthly.baseIncome) * 12 - 120000)) /
-  //     12
-  //   ).toFixed();
-  // } else if (newMonthly.baseIncome * 12 > 180000) {
-  //   newMonthly.incomeTax = (
-  //     (51667 + 0.45 * (parseFloat(newMonthly.baseIncome) * 12 - 180000)) /
-  //     12
-  //   ).toFixed();
-  // }
-
-  //==============================================
-
-  newHourly.incomeTax = (parseFloat(newMonthly.incomeTax) * 12) / 52 / 5 / 8;
-  newDaily.incomeTax = parseFloat(newHourly.incomeTax) * 8;
-  newWeekly.incomeTax = parseFloat(newHourly.incomeTax) * 8 * 5;
-  newFortnightly.incomeTax = parseFloat(newHourly.incomeTax) * 8 * 5 * 2;
-  newMonthly.incomeTax = (parseFloat(newHourly.incomeTax) * 8 * 5 * 52) / 12;
-  newYearly.incomeTax =
-    parseFloat(newDaily.incomeTax) * 5 * 52 * factorOfReductionByDaysOff;
-
-  //==============================================
-
-  //calculate after-tax income [0]
-  newHourly.afterTaxIncome =
-    parseFloat(newHourly.baseIncome) - parseFloat(newHourly.incomeTax);
-  newDaily.afterTaxIncome =
-    parseFloat(newDaily.baseIncome) - parseFloat(newDaily.incomeTax);
-  newWeekly.afterTaxIncome =
-    parseFloat(newWeekly.baseIncome) - parseFloat(newWeekly.incomeTax);
-  newFortnightly.afterTaxIncome =
-    parseFloat(newFortnightly.baseIncome) -
-    parseFloat(newFortnightly.incomeTax);
-  newMonthly.afterTaxIncome =
-    parseFloat(newMonthly.baseIncome) - parseFloat(newMonthly.incomeTax);
-  newYearly.afterTaxIncome =
-    parseFloat(newYearly.baseIncome) - parseFloat(newYearly.incomeTax);
-
-  if (arrayName) {
-    arrayGroup[arrayName][i] = enteredValue;
-  }
-
-  for (var key in newHourly) {
-    newHourly[key] = parseFloat(newHourly[key]).toFixed();
-    newDaily[key] = parseFloat(newDaily[key]).toFixed();
-    newWeekly[key] = parseFloat(newWeekly[key]).toFixed();
-    newFortnightly[key] = parseFloat(newFortnightly[key]).toFixed();
-    newMonthly[key] = parseFloat(newMonthly[key]).toFixed();
-    newYearly[key] = parseFloat(newYearly[key]).toFixed();
-  }
-
-  setHourly(newHourly);
-  setDaily(newDaily);
-  setWeekly(newWeekly);
-  setFortnightly(newFortnightly);
-  setMonthly(newMonthly);
-  setYearly(newYearly);
+  }, [hourlyBase, superRate, base, setBase]);
 
   return (
     <>
@@ -257,8 +129,8 @@ const CalculationFromBase = () => {
             <th title="Before-tax income">Base</th>
             <th>Super</th>
             <th title="Base income + super">Package</th>
-            {newIsContract && <th title="relevant for contractors">GST</th>}
-            {newIsContract && (
+            {isContract && <th title="relevant for contractors">GST</th>}
+            {isContract && (
               <th title="package + GST, relevant for contractors">Total</th>
             )}
           </tr>
@@ -269,19 +141,20 @@ const CalculationFromBase = () => {
             <td className="SmallerText">Before tax income</td>
             <td></td>
             <td className="SmallerText">Base + super</td>
-            {newIsContract && (
+            {isContract && (
               <td className="SmallerText">GST - contractors only</td>
             )}
-            {newIsContract && (
+            {isContract && (
               <td className="SmallerText">Package + GST - contractors only</td>
             )}
           </tr>
+
           <tr>
             <td className="RowHeader">Hour</td>
             <td id="hourlyAfterTaxIncome">
               <NumericFormat
                 displayType="text"
-                value={hourly.afterTaxIncome}
+                value={afterTaxIncome.hourly}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -289,7 +162,7 @@ const CalculationFromBase = () => {
             <td id="hourlyIncomeTax">
               <NumericFormat
                 displayType="text"
-                value={hourly.incomeTax}
+                value={incomeTax.hourly}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -297,7 +170,7 @@ const CalculationFromBase = () => {
             <td id="hourlyBaseIncome">
               <NumericFormat
                 type="text"
-                value={hourly.baseIncome}
+                value={base.hourly}
                 thousandSeparator=","
                 prefix={"$"}
                 onValueChange={(values, sourceInfo) => {
@@ -307,23 +180,8 @@ const CalculationFromBase = () => {
                   const isEvent = sourceInfo.source === "event";
                   if (isEvent) {
                     hourlyBase = values.floatValue;
-                    calculationFromBase(
-                      enteredValue,
-                      newSuperRate,
-                      newNumDayOff,
-                      newYear,
-                      hourlyBase,
-                      setHourly,
-                      setDaily,
-                      setWeekly,
-                      setFortnightly,
-                      setMonthly,
-                      setYearly,
-                      GST,
-                      isContract,
-                      arrayName,
-                      i
-                    );
+
+                    setBase({ hourly: hourlyBase });
                   }
                 }}
               />
@@ -331,7 +189,7 @@ const CalculationFromBase = () => {
             <td id="hourlySuper">
               <NumericFormat
                 displayType="text"
-                value={hourly.super}
+                value={superAmt.hourly}
                 thousandSeparator=","
                 prefix={"$"}
               />
@@ -339,7 +197,7 @@ const CalculationFromBase = () => {
             <td id="hourlyPackage">
               <NumericFormat
                 type="text"
-                value={hourly.package}
+                value={packageAmt.hourly}
                 thousandSeparator=","
                 prefix={"$"}
                 onValueChange={(values, sourceInfo) => {
@@ -348,44 +206,28 @@ const CalculationFromBase = () => {
                   const isEvent = sourceInfo.source === "event";
                   if (isEvent) {
                     const enteredValue = values.floatValue;
-                    hourlyBase = values.floatValue / (1 + newSuperRate);
-                    calculationFromBase(
-                      enteredValue,
-                      newSuperRate,
-                      newNumDayOff,
-                      newYear,
-                      hourlyBase,
-                      setHourly,
-                      setDaily,
-                      setWeekly,
-                      setFortnightly,
-                      setMonthly,
-                      setYearly,
-                      GST,
-                      isContract,
-                      arrayName,
-                      i
-                    );
+                    hourlyBase = values.floatValue / (1 + superRate);
+                    setBase({ hourly: hourlyBase });
                   }
                 }}
               />
             </td>
 
-            {newIsContract && (
+            {isContract && (
               <td id="hourlyGST">
                 <NumericFormat
                   displayType="text"
-                  value={hourly.gst}
+                  value={gstAmt.hourly}
                   thousandSeparator=","
                   prefix={"$"}
                 />
               </td>
             )}
-            {newIsContract && (
+            {isContract && (
               <td id="hourlyTotal">
                 <NumericFormat
                   type="text"
-                  value={hourly.total}
+                  value={total.hourly}
                   thousandSeparator=","
                   prefix={"$"}
                   onValueChange={(values, sourceInfo) => {
@@ -395,24 +237,8 @@ const CalculationFromBase = () => {
                     if (isEvent) {
                       const enteredValue = values.floatValue;
                       hourlyBase =
-                        values.floatValue / (1 + GST) / (1 + newSuperRate);
-                      calculationFromBase(
-                        enteredValue,
-                        newSuperRate,
-                        newNumDayOff,
-                        newYear,
-                        hourlyBase,
-                        setHourly,
-                        setDaily,
-                        setWeekly,
-                        setFortnightly,
-                        setMonthly,
-                        setYearly,
-                        GST,
-                        isContract,
-                        arrayName,
-                        i
-                      );
+                        values.floatValue / (1 + GST) / (1 + superRate);
+                      setBase({ hourly: hourlyBase });
                     }
                   }}
                 />
@@ -1151,8 +977,10 @@ const CalculationFromBase = () => {
           </tr>
         </tbody>
       </table>
+      <p className="SmallerText">
+        This is an estimate only, we cannot guarantee its accuracy.
+      </p>
     </>
   );
 };
-
-export default CalculationFromBase;
+export default TableOld;
